@@ -3,9 +3,9 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
+import Providers from "@/providers";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
-
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -25,10 +25,13 @@ const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en" className={cn("font-sans", inter.variable)}
+      lang="en"
+      className={cn("font-sans", inter.variable)}
       // className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <Providers>
+        <body className="min-h-full flex flex-col">{children}</body>
+      </Providers>
     </html>
   );
 }
