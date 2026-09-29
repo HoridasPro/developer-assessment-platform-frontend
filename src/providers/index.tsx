@@ -1,14 +1,22 @@
 "use client";
 import React, { ReactNode } from "react";
-import QuesryProvider from "./query.provider";
+ 
 import { ThemeProvider } from "next-themes";
+import QueryProvider from "./queryProvider";
+import GoogleAuthProvider from "./googleAuthProvider";
+ 
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <QuesryProvider>{children}</QuesryProvider>
-    </ThemeProvider>
-    // <QuesryProvider>{children}</QuesryProvider>
+    <GoogleAuthProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem={false}
+      >
+        <QueryProvider>{children}</QueryProvider>
+      </ThemeProvider>
+    </GoogleAuthProvider>
   );
 };
 

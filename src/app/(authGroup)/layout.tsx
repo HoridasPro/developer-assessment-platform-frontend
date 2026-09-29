@@ -4,10 +4,13 @@ import AuthFooter from "./_components/authFooter/authFooter";
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col w-full">
       <AuthHeader />
-      <main className="flex flex-1 items-center justify-center px-4 py-10">
-        <div className="w-full max-w-md">{children}</div>
+      <main className="flex flex-1 items-center justify-center">
+    
+        <div className="w-full max-w-[7xl] mx-auto overflow-hidden rounded-2xl">
+          {children}
+        </div>
       </main>
       <AuthFooter />
     </div>

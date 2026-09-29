@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -12,6 +11,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useGetMe, useLogout } from "@/hooks";
+import { toast } from "@/components/ui/toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PublicHeader = () => {
   const { theme, setTheme } = useTheme();
@@ -20,11 +22,37 @@ const PublicHeader = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+  const { data, isLoading } = useGetMe();
+  const { mutate: logout } = useLogout();
+
+  const queryClient = useQueryClient();
+
+  const handleSubmit = () => {
+    logout(undefined, {
+      onSuccess: (res) => {
+        toast.add({
+          title: "Logged out",
+          description: res?.message || "You have been logged out successfully",
+          type: "success",
+        });
+
+        queryClient.removeQueries({ queryKey: ["user"] });
+      },
+      onError: (err) => {
+        toast.add({
+          title: "Logged out failure",
+          description: err?.message || "Something went wrong",
+          type: "error",
+        });
+      },
+    });
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/60 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold tracking-tight">
+        <Link href="/" className="text-xl font-bold tracking-tight sm:text-2xl">
           Dev<span className="text-primary">Assess</span>
         </Link>
 
@@ -71,16 +99,32 @@ const PublicHeader = () => {
           </Button>
 
           {/* Login */}
-          <Link href="/login">
-            <Button variant="ghost" className="hidden sm:inline-flex">
-              Login
+          {!isLoading && !data && (
+            <>
+              <Link href="/login">
+                <Button
+                  variant="ghost"
+                  className="hidden sm:inline-flex cursor-pointer"
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button className="hidden sm:inline-flex cursor-pointer">
+                  Register
+                </Button>
+              </Link>
+            </>
+          )}
+          {!isLoading && data && (
+            <Button
+              onClick={handleSubmit}
+              variant="destructive"
+              className="hidden sm:inline-flex cursor-pointer"
+            >
+              Logout
             </Button>
-          </Link>
-
-          {/* Register */}
-          <Link href="/register">
-            <Button className="hidden sm:inline-flex">Register</Button>
-          </Link>
+          )}
 
           {/* Mobile Menu */}
           <Sheet>
