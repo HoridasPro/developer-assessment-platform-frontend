@@ -52,16 +52,21 @@ export function LoginForm({
     login(data, {
       onSuccess: (res) => {
         toast.add({
-          title: "Welcome to back",
-          description: res.message || "Login Successfully",
+          title: "OTP Sent",
+          description:
+            res.message || "A login OTP has been sent to your email.",
           type: "success",
         });
-        router.push("/");
+
+        router.push(
+          `/verify-login-page?email=${encodeURIComponent(data.email)}`,
+        );
       },
+
       onError: (err) => {
         toast.add({
           title: "Authorization failure",
-          description: err.message || " Something is wroing",
+          description: err.message || "Something went wrong. Please try again.",
           type: "error",
         });
       },
@@ -82,12 +87,13 @@ export function LoginForm({
     googleLogin(
       { idToken },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           toast.add({
             title: "Login Successfully",
             description: "Welcome back",
             type: "success",
           });
+          console.log("LOGIN OTP RESPONSE:", data);
           router.push("/");
         },
         onError: (err) => {

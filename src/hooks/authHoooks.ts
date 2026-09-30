@@ -4,13 +4,21 @@ import {
   userLogin,
   userLogout,
   userRegister,
-  verifyEmail,
+  verifyEmailOtp,
+  verifyLoginOtp,
 } from "@/api";
+import { verifyEmailOtpPayload } from "@/types/verifyEmailOtpPayload";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useLogin = () => {
   return useMutation({
     mutationFn: userLogin,
+  });
+};
+
+export const useVerifyLoginOtp = () => {
+  return useMutation({
+    mutationFn: (payload: verifyEmailOtpPayload) => verifyLoginOtp(payload),
   });
 };
 export const useLogout = () => {
@@ -31,12 +39,9 @@ export const useRegister = () => {
   });
 };
 
-export const useVerifyEmail = (token: string | null) => {
-  return useQuery({
-    queryKey: ["verify-email", token],
-    queryFn: () => verifyEmail(token as string),
-    enabled: !!token,
-    retry: false,
+export const useVerifyEmailOtp = () => {
+  return useMutation({
+    mutationFn: (payload: verifyEmailOtpPayload) => verifyEmailOtp(payload),
   });
 };
 

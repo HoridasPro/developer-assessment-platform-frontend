@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -40,7 +41,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       phone: "",
     },
   });
+
   const { mutate: register, isPending: registerPending } = useRegister();
+
   const router = useRouter();
 
   const onSubmit = (data: RegisterFormData) => {
@@ -53,8 +56,11 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           type: "success",
         });
 
-        router.push("/login");
+        router.push(
+          `/verify-register-page?email=${encodeURIComponent(data.email)}`,
+        );
       },
+
       onError: (err) => {
         toast.add({
           title: "Register Failed",
@@ -64,18 +70,19 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       },
     });
   };
+
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Card
       {...props}
-      className="w-full rounded-xl border border-border/60 bg-card p-1 sm:p-2 shadow-lg transition-all duration-200"
+      className="w-full rounded-xl border border-border/60 bg-card p-1 shadow-lg transition-all duration-200 sm:p-2"
     >
-    
-      <CardHeader className="space-y-0.5 text-center p-3 sm:p-4">
+      <CardHeader className="space-y-0.5 p-3 text-center sm:p-4">
         <CardTitle className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
           Create an account
         </CardTitle>
+
         <CardDescription className="text-xs text-muted-foreground">
           Enter your information below to create your account
         </CardDescription>
@@ -84,7 +91,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       <CardContent className="px-3 pb-3 pt-0">
         <form
           onSubmit={validators.handleSubmit(onSubmit)}
-          className="space-y-2.5"  
+          className="space-y-2.5"
         >
           <FieldGroup className="space-y-2">
             {/* Full Name */}
@@ -95,6 +102,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               >
                 Full Name
               </FieldLabel>
+
               <Input
                 id="name"
                 type="text"
@@ -102,6 +110,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 className="h-8.5 w-full rounded-md border border-input bg-background px-2.5 py-1 text-xs ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 {...validators.register("name")}
               />
+
               {validators.formState.errors.name && (
                 <FieldError className="text-[10px] font-medium text-destructive">
                   {validators.formState.errors.name.message}
@@ -117,6 +126,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               >
                 Email
               </FieldLabel>
+
               <Input
                 id="email"
                 type="email"
@@ -124,6 +134,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 className="h-8.5 w-full rounded-md border border-input bg-background px-2.5 py-1 text-xs ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 {...validators.register("email")}
               />
+
               {validators.formState.errors.email && (
                 <FieldError className="text-[10px] font-medium text-destructive">
                   {validators.formState.errors.email.message}
@@ -139,6 +150,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               >
                 Password
               </FieldLabel>
+
               <div className="relative">
                 <Input
                   id="password"
@@ -147,6 +159,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   className="h-8.5 w-full rounded-md border border-input bg-background px-2.5 py-1 text-xs ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   {...validators.register("password")}
                 />
+
                 <button
                   className="absolute right-2.5 top-2 cursor-pointer text-muted-foreground hover:text-foreground"
                   type="button"
@@ -159,6 +172,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   )}
                 </button>
               </div>
+
               {validators.formState.errors.password && (
                 <FieldError className="text-[10px] font-medium text-destructive">
                   {validators.formState.errors.password.message}
@@ -198,6 +212,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               >
                 Phone Number
               </FieldLabel>
+
               <Input
                 id="phone"
                 type="tel"
@@ -205,6 +220,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 className="h-8.5 w-full rounded-md border border-input bg-background px-2.5 py-1 text-xs ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 {...validators.register("phone")}
               />
+
               {validators.formState.errors.phone && (
                 <FieldError className="text-[10px] font-medium text-destructive">
                   {validators.formState.errors.phone.message}
@@ -220,14 +236,17 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               >
                 Account Type
               </FieldLabel>
+
               <select
                 id="role"
                 className="flex h-8.5 w-full rounded-md border border-input bg-background px-2.5 py-1 text-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 {...validators.register("role")}
               >
                 <option value="CANDIDATE">Candidate</option>
+
                 <option value="COMPANY">Company</option>
               </select>
+
               {validators.formState.errors.role && (
                 <FieldError className="text-[10px] font-medium text-destructive">
                   {validators.formState.errors.role.message}
@@ -241,11 +260,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <Button
                   type="submit"
                   disabled={registerPending}
-                  className="h-8.5 w-full rounded-md bg-primary text-xs text-primary-foreground hover:bg-primary/90 font-medium transition-colors cursor-pointer"
+                  className="h-8.5 w-full cursor-pointer rounded-md bg-primary text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                 >
                   {registerPending ? (
                     <>
-                      <Spinner /> Submitting...
+                      <Spinner />
+                      Submitting...
                     </>
                   ) : (
                     " Create Account"
@@ -255,9 +275,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <Button
                   variant="outline"
                   type="button"
-                  className="flex h-8.5 w-full items-center justify-center gap-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-xs font-medium transition-colors cursor-pointer"
+                  className="flex h-8.5 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-input bg-background text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
                   <FcGoogle className="size-4 shrink-0" />
+
                   <span>Sign up with Google</span>
                 </Button>
 
@@ -265,7 +286,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   Already have an account?{" "}
                   <a
                     href="/login"
-                    className="font-medium text-primary hover:underline underline-offset-4 transition-colors"
+                    className="font-medium text-primary underline-offset-4 transition-colors hover:underline"
                   >
                     Sign in
                   </a>

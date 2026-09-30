@@ -1,7 +1,9 @@
 "use client";
+
 import Link from "next/link";
 import { Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +16,18 @@ import {
 import { useGetMe, useLogout } from "@/hooks";
 import { toast } from "@/components/ui/toast";
 import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const PublicHeader = () => {
   const { theme, setTheme } = useTheme();
+  const router = useRouter();  
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -27,23 +38,38 @@ const PublicHeader = () => {
 
   const queryClient = useQueryClient();
 
-  const handleSubmit = () => {
+  const handleLogout = () => {
     logout(undefined, {
-      onSuccess: (res) => {
+      onSuccess: (res: any) => {
+      
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+
         toast.add({
           title: "Logged out",
           description: res?.message || "You have been logged out successfully",
           type: "success",
         });
 
-        queryClient.removeQueries({ queryKey: ["user"] });
+       
+        queryClient.clear();
+
+      
+        router.push("/login");
       },
-      onError: (err) => {
+      onError: (err: any) => {
+      
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        queryClient.clear();
+
         toast.add({
-          title: "Logged out failure",
-          description: err?.message || "Something went wrong",
+          title: "Logged out",
+          description: err?.message || "Logged out locally",
           type: "error",
         });
+
+        router.push("/login");
       },
     });
   };
@@ -56,7 +82,7 @@ const PublicHeader = () => {
           Dev<span className="text-primary">Assess</span>
         </Link>
 
-        {/* Desktop Navigation */}
+    
         <nav className="hidden items-center gap-6 md:flex">
           <Link
             href="/"
@@ -87,9 +113,9 @@ const PublicHeader = () => {
           </Link>
         </nav>
 
-        {/* Right Side */}
+ 
         <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
+      
           <Button variant="outline" size="icon" onClick={toggleTheme}>
             {theme === "dark" ? (
               <Sun className="h-4 w-4" />
@@ -98,7 +124,7 @@ const PublicHeader = () => {
             )}
           </Button>
 
-          {/* Login */}
+     
           {!isLoading && !data && (
             <>
               <Link href="/login">
@@ -116,22 +142,58 @@ const PublicHeader = () => {
               </Link>
             </>
           )}
+
+          
+
           {!isLoading && data && (
-            <Button
-              onClick={handleSubmit}
-              variant="destructive"
-              className="hidden sm:inline-flex cursor-pointer"
-            >
-              Logout
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <button
+                  type="button"
+                  title={data?.data?.name}
+                  className="flex items-center justify-center rounded-full border p-1 hover:bg-muted"
+                >
+                  {data?.data?.profilePhoto ? (
+                    <Image
+                      src={data.data.profilePhoto}
+                      alt={data.data.name}
+                      width={50}
+                      height={50}
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                      {data?.data?.name?.charAt(0)?.toUpperCase()}
+                    </div>
+                  )}
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem>
+                  <Link href="/profile">👤 My Profile</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem>
+                  <Link href="/settings">⚙️ Settings</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="cursor-pointer text-destructive"
+                >
+                  🚪 Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
 
           {/* Mobile Menu */}
           <Sheet>
-            <SheetTrigger>
-              <Button variant="outline" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-              </Button>
+            <SheetTrigger className="inline-flex h-10 w-10 items-center justify-center rounded-md border md:hidden">
+              <Menu className="h-5 w-5" />
             </SheetTrigger>
 
             <SheetContent>
@@ -143,25 +205,31 @@ const PublicHeader = () => {
 
               <nav className="mt-8 flex flex-col gap-4">
                 <Link href="/">Home</Link>
-
                 <Link href="/assessments">Assessments</Link>
-
                 <Link href="/about">About</Link>
-
                 <Link href="/contact">Contact</Link>
 
                 <div className="mt-4 flex flex-col gap-2">
-                  {/* Mobile Login */}
-                  <Link href="/login">
-                    <Button variant="outline" className="w-full">
-                      Login
+                  {!isLoading && !data ? (
+                    <>
+                      <Link href="/login">
+                        <Button variant="outline" className="w-full">
+                          Login
+                        </Button>
+                      </Link>
+                      <Link href="/register">
+                        <Button className="w-full">Register</Button>
+                      </Link>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={handleLogout}
+                      variant="destructive"
+                      className="w-full"
+                    >
+                      Logout
                     </Button>
-                  </Link>
-
-                  {/* Mobile Register */}
-                  <Link href="/register">
-                    <Button className="w-full">Register</Button>
-                  </Link>
+                  )}
                 </div>
               </nav>
             </SheetContent>

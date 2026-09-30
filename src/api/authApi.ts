@@ -1,9 +1,17 @@
 import apiClient from "@/lib/apiClient";
 import { loginPayload } from "@/types/loginPayload";
 import { registerPayload } from "@/types/registerPayload";
+import { verifyEmailOtpPayload } from "@/types/verifyEmailOtpPayload";
 
 export const userLogin = (payload: loginPayload) => {
   return apiClient("/auth/login", { method: "POST", body: payload });
+};
+
+export const verifyLoginOtp = (payload: verifyEmailOtpPayload) => {
+  return apiClient("/auth/verify-login-otp", {
+    method: "POST",
+    body: payload,
+  });
 };
 
 export const userLogout = () => {
@@ -18,9 +26,10 @@ export const userRegister = (payload: registerPayload) => {
   return apiClient("/auth/register", { method: "POST", body: payload });
 };
 
-export const verifyEmail = (token: string) => {
-  return apiClient(`/auth/verify-email?token=${encodeURIComponent(token)}`, {
-    method: "GET",
+export const verifyEmailOtp = (payload: verifyEmailOtpPayload) => {
+  return apiClient("/auth/verify-email-otp", {
+    method: "POST",
+    body: payload,
   });
 };
 
