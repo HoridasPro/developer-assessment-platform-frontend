@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Moon, Sun } from "lucide-react";
+import { LogOut, Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
@@ -27,7 +27,7 @@ import {
 
 const PublicHeader = () => {
   const { theme, setTheme } = useTheme();
-  const router = useRouter();  
+  const router = useRouter();
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -40,8 +40,7 @@ const PublicHeader = () => {
 
   const handleLogout = () => {
     logout(undefined, {
-      onSuccess: (res: any) => {
-      
+      onSuccess: (res) => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
 
@@ -51,14 +50,11 @@ const PublicHeader = () => {
           type: "success",
         });
 
-       
         queryClient.clear();
 
-      
         router.push("/login");
       },
-      onError: (err: any) => {
-      
+      onError: (err) => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         queryClient.clear();
@@ -82,7 +78,6 @@ const PublicHeader = () => {
           Dev<span className="text-primary">Assess</span>
         </Link>
 
-    
         <nav className="hidden items-center gap-6 md:flex">
           <Link
             href="/"
@@ -113,10 +108,13 @@ const PublicHeader = () => {
           </Link>
         </nav>
 
- 
         <div className="flex items-center gap-2">
-      
-          <Button variant="outline" size="icon" onClick={toggleTheme}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleTheme}
+            className="cursor-pointer"
+          >
             {theme === "dark" ? (
               <Sun className="h-4 w-4" />
             ) : (
@@ -124,7 +122,6 @@ const PublicHeader = () => {
             )}
           </Button>
 
-     
           {!isLoading && !data && (
             <>
               <Link href="/login">
@@ -143,15 +140,13 @@ const PublicHeader = () => {
             </>
           )}
 
-          
-
           {!isLoading && data && (
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <button
+                <Button
                   type="button"
                   title={data?.data?.name}
-                  className="flex items-center justify-center rounded-full border p-1 hover:bg-muted"
+                  className="flex items-center justify-center rounded-full border p-1 hover:bg-muted cursor-pointer"
                 >
                   {data?.data?.profilePhoto ? (
                     <Image
@@ -166,7 +161,7 @@ const PublicHeader = () => {
                       {data?.data?.name?.charAt(0)?.toUpperCase()}
                     </div>
                   )}
-                </button>
+                </Button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end" className="w-48">
@@ -184,7 +179,8 @@ const PublicHeader = () => {
                   onClick={handleLogout}
                   className="cursor-pointer text-destructive"
                 >
-                  🚪 Logout
+                  <LogOut className="h-4 w-4" />
+                  Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -14,21 +14,23 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
-import { useRegister } from "@/hooks";
+import { useGoogleAuthLogin, useRegister } from "@/hooks";
 import { RegisterFormData } from "@/types/registerFormData";
 
 import { registerSchema } from "@/validation/authValidation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { GoogleLogin } from "@react-oauth/google";
 import { Eye, EyeClosed } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const validators = useForm<RegisterFormData>({
@@ -70,8 +72,49 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       },
     });
   };
-
   const [showPassword, setShowPassword] = useState(false);
+  const { mutate: googleLogin } = useGoogleAuthLogin();
+
+  // Google auth login
+  const handleGoogleSuccess = (credentialResponse: { credential?: string }) => {
+    const idToken = credentialResponse.credential;
+    if (!idToken) {
+      toast.add({
+        title: "Google idToken not found",
+        description: "Something went wrong please try again",
+        type: "error",
+      });
+      return;
+    }
+    googleLogin(
+      { idToken },
+      {
+        onSuccess: (data) => {
+          toast.add({
+            title: "Login Successfully",
+            description: "Welcome back",
+            type: "success",
+          });
+          console.log("LOGIN OTP RESPONSE:", data);
+          router.push("/");
+        },
+        onError: (err) => {
+          toast.add({
+            title: "Google OAuth Failed",
+            description: err.message || "Something went wrong please try again",
+            type: "error",
+          });
+        },
+      },
+    );
+  };
+  const handleGoogleError = () => {
+    toast.add({
+      title: "Google OAuth Failed",
+      description: "Something went wrong please try again",
+      type: "error",
+    });
+  };
 
   return (
     <Card
@@ -272,7 +315,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   )}
                 </Button>
 
-                <Button
+                {/* <Button
                   variant="outline"
                   type="button"
                   className="flex h-8.5 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-input bg-background text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -280,7 +323,16 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   <FcGoogle className="size-4 shrink-0" />
 
                   <span>Sign up with Google</span>
-                </Button>
+                </Button> */}
+                <FieldSeparator>Or continue with</FieldSeparator>
+
+                <GoogleLogin
+                  theme="outline"
+                  shape="pill"
+                  text="continue_with"
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                />
 
                 <FieldDescription className="pt-0.5 text-center text-[11px] text-muted-foreground">
                   Already have an account?{" "}
