@@ -1,9 +1,5 @@
-const DashboardPage = () => {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  );
+const DashboarCandidatedPage = () => {
+  return <div>This is dashboard company page</div>;
 };
 
-export default DashboardPage;
+export default DashboarCandidatedPage;

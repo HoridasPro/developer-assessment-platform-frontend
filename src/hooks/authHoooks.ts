@@ -1,4 +1,6 @@
 import {
+  createAssessmentPayload,
+  createQuestion,
   getMe,
   userGoogleAuthLogin,
   userLogin,
@@ -7,7 +9,7 @@ import {
   verifyEmailOtp,
   verifyLoginOtp,
 } from "@/api";
-import { verifyEmailOtpPayload } from "@/types/verifyEmailOtpPayload";
+// import { verifyEmailOtpPayload } from "@/types/verifyEmailOtpPayload";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useLogin = () => {
@@ -18,7 +20,8 @@ export const useLogin = () => {
 
 export const useVerifyLoginOtp = () => {
   return useMutation({
-    mutationFn: (payload: verifyEmailOtpPayload) => verifyLoginOtp(payload),
+    // mutationFn: (payload: verifyEmailOtpPayload) => verifyLoginOtp(payload),
+    mutationFn: verifyLoginOtp,
   });
 };
 export const useLogout = () => {
@@ -41,7 +44,8 @@ export const useRegister = () => {
 
 export const useVerifyEmailOtp = () => {
   return useMutation({
-    mutationFn: (payload: verifyEmailOtpPayload) => verifyEmailOtp(payload),
+    // mutationFn: (payload: verifyEmailOtpPayload) => verifyEmailOtp(payload),
+    mutationFn: verifyEmailOtp,
   });
 };
 
@@ -51,3 +55,28 @@ export const useGetMe = () => {
     queryFn: getMe,
   });
 };
+
+export const useCreateAssessment = () => {
+  return useMutation({
+    mutationFn: createAssessmentPayload,
+  });
+};
+
+// export const useGetQuestions = () => {
+//   return useQuery({
+//     queryKey: ["questions"],
+//     queryFn: getQuestions,
+//   });
+// };
+
+export const useCreateQuestion = () => {
+  return useMutation({
+    mutationFn: createQuestion,
+  });
+};
+
+// export const useDeleteQuestion = () => {
+//   return useMutation({
+//     mutationFn: deleteQuestion,
+//   });
+// };

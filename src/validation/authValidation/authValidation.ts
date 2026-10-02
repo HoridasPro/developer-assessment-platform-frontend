@@ -52,3 +52,4 @@ export const registerSchema = z.object({
     .string()
     .regex(/^01[3-9]\d{8}$/, "Please provide a valid Bangladeshi phone number"),
 });
+

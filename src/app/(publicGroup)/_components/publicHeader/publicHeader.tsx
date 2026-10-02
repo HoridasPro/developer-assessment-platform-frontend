@@ -143,10 +143,10 @@ const PublicHeader = () => {
           {!isLoading && data && (
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <Button
+                <button
                   type="button"
                   title={data?.data?.name}
-                  className="flex items-center justify-center rounded-full border p-1 hover:bg-muted cursor-pointer"
+                  className="flex items-center justify-center rounded-full border p-1 cursor-pointer"
                 >
                   {data?.data?.profilePhoto ? (
                     <Image
@@ -161,7 +161,7 @@ const PublicHeader = () => {
                       {data?.data?.name?.charAt(0)?.toUpperCase()}
                     </div>
                   )}
-                </Button>
+                </button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end" className="w-48">
