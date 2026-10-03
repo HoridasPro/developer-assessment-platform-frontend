@@ -37,7 +37,9 @@ export default function CompanySidebar() {
     <Sidebar>
       {/* Header */}
       <SidebarHeader className="border-b px-6 py-5">
-        <h2 className="text-2xl font-bold text-blue-600">DevAssessment</h2>
+        <Link href="/" className="text-2xl font-bold text-blue-600">
+          DevAssessment
+        </Link>
 
         <p className="text-sm text-gray-500">Company Dashboard</p>
       </SidebarHeader>
@@ -103,16 +105,30 @@ export default function CompanySidebar() {
                         </SidebarMenuButton>
                       </SidebarMenuItem>
 
-                      {/* Create Question */}
                       <SidebarMenuItem>
                         <SidebarMenuButton
                           render={
                             <Link href="/dashboard/company/createQuestion" />
                           }
-                          tooltip="Create Question"
+                          tooltip="Create Assessment"
                         >
                           <Plus className="h-4 w-4" />
                           <span>Create Question</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+
+                      
+
+
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          render={
+                            <Link href="/dashboard/company/assessments" />
+                          }
+                          tooltip="Assessments"
+                        >
+                          <ClipboardList className="h-4 w-4" />
+                          <span>Assessments</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
 
@@ -156,7 +172,7 @@ export default function CompanySidebar() {
               {/* Problem Bank */}
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  render={<Link href="/dashboard/problems" />}
+                  render={<Link href="/dashboard/company/problemBank" />}
                   tooltip="Problem Bank"
                 >
                   <FileText className="h-5 w-5" />

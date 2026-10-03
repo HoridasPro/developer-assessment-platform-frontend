@@ -1,7 +1,10 @@
 import {
+  addQuestionsToAssessment,
   createAssessmentPayload,
   createQuestion,
+  getAssessments,
   getMe,
+  getQuestions,
   userGoogleAuthLogin,
   userLogin,
   userLogout,
@@ -9,7 +12,8 @@ import {
   verifyEmailOtp,
   verifyLoginOtp,
 } from "@/api";
-// import { verifyEmailOtpPayload } from "@/types/verifyEmailOtpPayload";
+import { Assessment } from "@/types/assessmentPayload";
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useLogin = () => {
@@ -20,7 +24,6 @@ export const useLogin = () => {
 
 export const useVerifyLoginOtp = () => {
   return useMutation({
-    // mutationFn: (payload: verifyEmailOtpPayload) => verifyLoginOtp(payload),
     mutationFn: verifyLoginOtp,
   });
 };
@@ -44,7 +47,6 @@ export const useRegister = () => {
 
 export const useVerifyEmailOtp = () => {
   return useMutation({
-    // mutationFn: (payload: verifyEmailOtpPayload) => verifyEmailOtp(payload),
     mutationFn: verifyEmailOtp,
   });
 };
@@ -62,12 +64,16 @@ export const useCreateAssessment = () => {
   });
 };
 
-// export const useGetQuestions = () => {
-//   return useQuery({
-//     queryKey: ["questions"],
-//     queryFn: getQuestions,
-//   });
-// };
+export const useGetQuestions = () => {
+  return useQuery({
+    queryKey: ["questions"],
+    queryFn: getQuestions,
+    // queryFn: async () => {
+    // const data = await getQuestions();
+    // TanStack Query তে undefined দেয়া নিষিদ্ধ, তাই null/array সেফগার্ড দেওয়া আবশ্যক
+    // return data ?? [];
+  });
+};
 
 export const useCreateQuestion = () => {
   return useMutation({
@@ -75,8 +81,33 @@ export const useCreateQuestion = () => {
   });
 };
 
-// export const useDeleteQuestion = () => {
-//   return useMutation({
-//     mutationFn: deleteQuestion,
+export const useAddQuestionsToAssessment = () => {
+  return useMutation({
+    mutationFn: addQuestionsToAssessment,
+  });
+};
+
+// export const useGetAssessments = () => {
+//   return useQuery({
+//     queryKey: ["assessments"],
+//     queryFn: getAssessments,
+//   });
+// };
+
+export const useGetAssessments = () => {
+  return useQuery<Assessment[]>({
+    queryKey: ["assessments"],
+    queryFn: getAssessments,
+    select: (data: any) => (Array.isArray(data) ? data : data?.data || []),
+  });
+};
+
+
+ 
+// export const useGetAssessmentQuestions = (assessmentId: string) => {
+//   return useQuery({
+//     queryKey: ["assessment-questions", assessmentId],
+//     queryFn: () => getAssessmentQuestions(assessmentId),
+//     enabled: !!assessmentId,
 //   });
 // };

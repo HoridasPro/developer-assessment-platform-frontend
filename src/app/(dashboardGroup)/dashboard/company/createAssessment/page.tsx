@@ -13,7 +13,7 @@ const CreateAssessmentPage = () => {
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <Button
-            variant="ghost"
+             variant="ghost"
             size="sm"
             className="-ml-2 mb-3"
             render={<Link href="/dashboard/assessments" />}

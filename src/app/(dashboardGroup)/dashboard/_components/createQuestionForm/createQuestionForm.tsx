@@ -197,7 +197,7 @@ export default function CreateQuestionForm() {
             <select
               id="question-type"
               {...register("type")}
-              className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20"
+              className="h-11 w-full rounded-md border border-input bg-white dark:bg-muted px-3 text-sm outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20"
             >
               <option value="MCQ">MCQ</option>
               <option value="WRITTEN">Written</option>
@@ -246,7 +246,7 @@ export default function CreateQuestionForm() {
               <select
                 id="question-difficulty"
                 {...register("difficulty")}
-                className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20"
+                className="h-11 w-full rounded-md border border-input bg-white px-3 text-sm outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 dark:bg-muted"
               >
                 <option value="EASY">Easy</option>
                 <option value="MEDIUM">Medium</option>
@@ -301,11 +301,11 @@ export default function CreateQuestionForm() {
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="group flex items-start gap-2 rounded-lg border bg-background p-2.5 sm:gap-3 sm:p-3"
+                    className="group flex items-start gap-2 rounded-lg border bg-white dark:bg-muted p-2.5 sm:gap-3 sm:p-3"
                   >
                     {/* Correct Answer */}
                     <div className="flex h-11 shrink-0 items-center justify-center px-1">
-                      <input
+                      <Input
                         type="radio"
                         name="correctOption"
                         checked={options?.[index]?.isCorrect === true}
