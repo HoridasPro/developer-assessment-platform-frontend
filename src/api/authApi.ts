@@ -73,17 +73,65 @@ export const createQuestion = (payload: CreateQuestionPayload) => {
   });
 };
 
- 
 export const getQuestions = async () => {
-  return apiClient("/questions");  
-
+  return apiClient("/questions");
 };
 
-// export const getAssessmentQuestions =(
-//   assessmentId: string,
-// ): Promise<Question[]> => {
-//    return apiClient(
-//     `/assessments/${assessmentId}/questions`,
-//   );
-// };
+export const getAssessmentQuestions = (
+  assessmentId: string,
+): Promise<Question[]> => {
+  return apiClient(`/questions/${assessmentId}`);
+};
+
+export const publishAssessment = (assessmentId: string) => {
+  return apiClient(`/publish/${assessmentId}`, {
+    method: "PATCH",
+  });
+};
+
+export const getAssessmentById = (assessmentId: string) => {
+  return apiClient(`/assessments/${assessmentId}`, {
+    method: "GET",
+  });
+};
+
+export const initiatePayment = (assessmentId: string) => {
+  return apiClient("/payments/initiate", {
+    method: "POST",
+    body: JSON.stringify({
+      assessmentId,
+    }),
+  });
+};
  
+export const confirmPayment = (sessionId: string) => {
+  return apiClient("/payments/webhook", {
+    method: "POST",
+    body: JSON.stringify({
+      sessionId,
+    }),
+  });
+};
+
+
+export const getPaymentByAssessment = (assessmentId: string) => {
+  return apiClient(`/payments/${assessmentId}`, {
+    method: "GET",
+  });
+};
+
+ 
+export const assignCandidate = (
+  assessmentId: string,
+  candidateId: string,
+) => {
+  return apiClient(
+    `/${assessmentId}/assign`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        candidateId,
+      }),
+    },
+  );
+};

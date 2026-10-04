@@ -1,10 +1,17 @@
 import {
   addQuestionsToAssessment,
+  assignCandidate,
+  confirmPayment,
   createAssessmentPayload,
   createQuestion,
+  getAssessmentById,
+  getAssessmentQuestions,
   getAssessments,
   getMe,
+  getPaymentByAssessment,
   getQuestions,
+  initiatePayment,
+  publishAssessment,
   userGoogleAuthLogin,
   userLogin,
   userLogout,
@@ -87,13 +94,6 @@ export const useAddQuestionsToAssessment = () => {
   });
 };
 
-// export const useGetAssessments = () => {
-//   return useQuery({
-//     queryKey: ["assessments"],
-//     queryFn: getAssessments,
-//   });
-// };
-
 export const useGetAssessments = () => {
   return useQuery<Assessment[]>({
     queryKey: ["assessments"],
@@ -102,12 +102,85 @@ export const useGetAssessments = () => {
   });
 };
 
+export const useGetAssessmentQuestions = (assessmentId: string) => {
+  return useQuery({
+    queryKey: ["assessment-questions", assessmentId],
+    queryFn: () => getAssessmentQuestions(assessmentId),
+    enabled: !!assessmentId,
+  });
+};
 
- 
-// export const useGetAssessmentQuestions = (assessmentId: string) => {
+export const usePublishAssessment = () => {
+  return useMutation({
+    mutationFn: publishAssessment,
+  });
+};
+
+export const useGetAssessmentById = (assessmentId: string) => {
+  return useQuery({
+    queryKey: ["assessment", assessmentId],
+    queryFn: () => getAssessmentById(assessmentId),
+  });
+};
+
+export const useInitiatePayment = () => {
+  return useMutation({
+    mutationFn: (assessmentId: string) => initiatePayment(assessmentId),
+  });
+};
+
+// export const useGetPaymentByAssessment = (assessmentId: string) => {
 //   return useQuery({
-//     queryKey: ["assessment-questions", assessmentId],
-//     queryFn: () => getAssessmentQuestions(assessmentId),
+//     queryKey: ["payment", assessmentId],
+
+//     queryFn: () => getPaymentByAssessment(assessmentId),
+
 //     enabled: !!assessmentId,
+
+//     refetchInterval: (query) => {
+//       const status = query.state.data?.data?.status;
+
+//       if (status === "PAID") {
+//         return false;
+//       }
+
+//       return 2000;
+//     },
 //   });
 // };
+
+export const useConfirmPayment = () => {
+  return useMutation({
+    mutationFn: (sessionId: string) => confirmPayment(sessionId),
+  });
+};
+
+export const useGetPaymentByAssessment = (assessmentId: string) => {
+  return useQuery({
+    queryKey: ["payment", assessmentId],
+    queryFn: () => getPaymentByAssessment(assessmentId),
+    enabled: !!assessmentId,
+
+    refetchInterval: (query) => {
+      const status = query.state.data?.data?.status;
+
+      if (status === "PAID") {
+        return false;
+      }
+
+      return 2000;
+    },
+  });
+};
+
+export const useAssignCandidate = () => {
+  return useMutation({
+    mutationFn: ({
+      assessmentId,
+      candidateId,
+    }: {
+      assessmentId: string;
+      candidateId: string;
+    }) => assignCandidate(assessmentId, candidateId),
+  });
+};
