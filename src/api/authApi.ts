@@ -54,7 +54,6 @@ export const getAssessments = async (): Promise<Assessment[]> => {
   const response = await apiClient("/assessments", {
     method: "GET",
   });
-  // API Response-এর structure অনুযায়ী res.data বা res রিটার্ন করুন
   return response?.data || response || [];
 };
 
@@ -136,9 +135,10 @@ export const assignCandidate = (
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ candidateUserId }), // অবশ্যই অবজেক্টকে JSON.stringify করতে হবে
+    body: JSON.stringify({ candidateUserId }),
   });
 };
+
 export const getCandidates = () => {
   return apiClient("/users/candidates", {
     method: "GET",

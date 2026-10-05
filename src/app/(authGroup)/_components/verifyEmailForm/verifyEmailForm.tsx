@@ -15,7 +15,6 @@ export default function VerifyEmailForm() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
-  
   const [otpDigits, setOtpDigits] = useState<string[]>(Array(6).fill(""));
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -26,17 +25,14 @@ export default function VerifyEmailForm() {
   const handleInputChange = (slot: string, value: string) => {
     const index = Number(slot);
 
-  
     if (!/^\d*$/.test(value)) return;
 
     const newOtp = [...otpDigits];
 
-     
     newOtp[index] = value.slice(-1);
 
     setOtpDigits(newOtp);
 
- 
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -45,7 +41,6 @@ export default function VerifyEmailForm() {
   const handleKeyDown = (slot: string, e: KeyboardEvent<HTMLInputElement>) => {
     const index = Number(slot);
 
-   
     if (e.key === "Backspace" && !otpDigits[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -56,13 +51,11 @@ export default function VerifyEmailForm() {
 
     const pastedData = e.clipboardData.getData("text").trim();
 
- 
     if (/^\d{6}$/.test(pastedData)) {
       const digits = pastedData.split("");
 
       setOtpDigits(digits);
 
-   
       inputRefs.current[5]?.focus();
     }
   };
@@ -78,7 +71,6 @@ export default function VerifyEmailForm() {
     });
   };
 
-  
   const isOtpComplete = otpDigits.every((digit) => digit !== "");
 
   if (!email) {

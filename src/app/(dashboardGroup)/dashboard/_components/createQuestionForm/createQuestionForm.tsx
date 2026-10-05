@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
@@ -30,7 +31,6 @@ export default function CreateQuestionForm() {
   } = useForm<CreateQuestionFormValues>({
     resolver: zodResolver(createQuestionSchema),
 
-    // Non-MCQ type select korle options form theke unregister hobe
     shouldUnregister: true,
 
     defaultValues: {
@@ -100,7 +100,6 @@ export default function CreateQuestionForm() {
       }),
     };
 
-    // Backend array expectation-er jonno wrap kora hoise
     const payload = {
       questions: [questionData],
     };
@@ -165,7 +164,7 @@ export default function CreateQuestionForm() {
             )}
           </div>
 
-          {/* Description */}
+       
           <div className="space-y-2">
             <label
               htmlFor="question-description"
@@ -188,7 +187,7 @@ export default function CreateQuestionForm() {
             )}
           </div>
 
-          {/* Question Type */}
+  
           <div className="space-y-2">
             <label htmlFor="question-type" className="text-sm font-medium">
               Question Type
@@ -209,9 +208,9 @@ export default function CreateQuestionForm() {
             )}
           </div>
 
-          {/* Category / Difficulty / Marks */}
+         
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Category */}
+          
             <div className="space-y-2">
               <label
                 htmlFor="question-category"

@@ -14,9 +14,7 @@ export default function PaymentCancelPage() {
       <div className="rounded-xl border bg-card p-8 text-center shadow-sm">
         <XCircle className="mx-auto h-16 w-16 text-red-500" />
 
-        <h1 className="mt-5 text-2xl font-bold">
-          Payment Cancelled
-        </h1>
+        <h1 className="mt-5 text-2xl font-bold">Payment Cancelled</h1>
 
         <p className="mt-3 text-muted-foreground">
           Your payment was cancelled. No payment was completed.
@@ -31,7 +29,7 @@ export default function PaymentCancelPage() {
           </Link>
 
           <Link
-            href={`/dashboard/company/assessments/${assessmentId}`}
+            href={`/dashboard/company/assessments/${assessmentId}/questions`}
             className="rounded-lg border px-5 py-3 text-sm font-medium hover:bg-muted"
           >
             Back to Assessment

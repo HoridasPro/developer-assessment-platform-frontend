@@ -40,10 +40,10 @@ export default function CandidateSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/dashboard/my-rentals"></Link>}
+                render={<Link href="/dashboard/candidate/myAssignedAssessments"></Link>}
               >
                 <Package className="h-5 w-5" />
-                <span>My Rentals</span>
+                <span>My assigned assessments</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 

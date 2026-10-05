@@ -64,8 +64,6 @@ const CreateAssessmentForm = () => {
           description: res.message || "Created assessment successfully",
           type: "success",
         });
-
-        // router.push(`/dashboard/company/assessments/${data.data.id}`);
         router.push("/dashboard/company/allAssessments");
       },
 

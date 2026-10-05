@@ -30,7 +30,6 @@ import { Eye, EyeClosed } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-// import { FcGoogle } from "react-icons/fc";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const validators = useForm<RegisterFormData>({
@@ -315,15 +314,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   )}
                 </Button>
 
-                {/* <Button
-                  variant="outline"
-                  type="button"
-                  className="flex h-8.5 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-input bg-background text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-                >
-                  <FcGoogle className="size-4 shrink-0" />
-
-                  <span>Sign up with Google</span>
-                </Button> */}
                 <FieldSeparator>Or continue with</FieldSeparator>
 
                 <GoogleLogin

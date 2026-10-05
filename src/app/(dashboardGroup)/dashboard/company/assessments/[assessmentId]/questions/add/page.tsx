@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
@@ -12,7 +13,6 @@ export default function AddAssessmentQuestionsPage() {
   const assessmentId = params.assessmentId as string;
 
   const { data, isLoading } = useGetQuestions();
- 
 
   // Safe Array Extraction
   const questionsList = Array.isArray(data)
@@ -42,7 +42,6 @@ export default function AddAssessmentQuestionsPage() {
       return;
     }
 
-    // FIX: targetQuestion থেকে marks নিয়ে payload-এ যুক্ত করা হয়েছে
     const options = selectedQuestionIds.map((questionId, index) => {
       const targetQuestion = questionsList.find(
         (q: any) => (q.id || q._id) === questionId,
@@ -51,7 +50,6 @@ export default function AddAssessmentQuestionsPage() {
       return {
         questionId,
         order: index + 1,
-        // প্রশ্ন থেকে marks নেওয়া হচ্ছে, না পাওয়া গেলে fallback হিসেবে 10 বা 0 ব্যবহার করবে
         marks: targetQuestion?.marks ?? 10,
       };
     });
@@ -182,7 +180,6 @@ export default function AddAssessmentQuestionsPage() {
                         </span>
                       )}
 
-                      {/* FIX: UI render-এও nullish coalescing ব্যবহার করা হয়েছে */}
                       <span className="rounded-md bg-muted px-2 py-1 text-xs">
                         {question.marks ?? 0} marks
                       </span>
