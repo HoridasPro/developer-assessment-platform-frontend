@@ -38,7 +38,9 @@ export const verifyEmailOtp = (payload: verifyEmailOtpPayload) => {
 };
 
 export const getMe = () => {
-  return apiClient("/users/me");
+  return apiClient("/users/me", {
+    method: "GET",
+  });
 };
 
 export const createAssessmentPayload = (payload: TCreateAssessmentPayload) => {
@@ -49,7 +51,9 @@ export const createAssessmentPayload = (payload: TCreateAssessmentPayload) => {
 };
 
 export const getAssessments = async (): Promise<Assessment[]> => {
-  const response = await apiClient("/assessments");
+  const response = await apiClient("/assessments", {
+    method: "GET",
+  });
   // API Response-এর structure অনুযায়ী res.data বা res রিটার্ন করুন
   return response?.data || response || [];
 };
@@ -73,14 +77,18 @@ export const createQuestion = (payload: CreateQuestionPayload) => {
   });
 };
 
-export const getQuestions = async () => {
-  return apiClient("/questions");
+export const getQuestions = () => {
+  return apiClient("/questions", {
+    method: "GET",
+  });
 };
 
 export const getAssessmentQuestions = (
   assessmentId: string,
 ): Promise<Question[]> => {
-  return apiClient(`/questions/${assessmentId}`);
+  return apiClient(`/questions/${assessmentId}`, {
+    method: "GET",
+  });
 };
 
 export const publishAssessment = (assessmentId: string) => {
@@ -103,7 +111,7 @@ export const initiatePayment = (assessmentId: string) => {
     }),
   });
 };
- 
+
 export const confirmPayment = (sessionId: string) => {
   return apiClient("/payments/webhook", {
     method: "POST",
@@ -113,25 +121,26 @@ export const confirmPayment = (sessionId: string) => {
   });
 };
 
-
 export const getPaymentByAssessment = (assessmentId: string) => {
   return apiClient(`/payments/${assessmentId}`, {
     method: "GET",
   });
 };
 
- 
 export const assignCandidate = (
   assessmentId: string,
-  candidateId: string,
+  candidateUserId: string,
 ) => {
-  return apiClient(
-    `/${assessmentId}/assign`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        candidateId,
-      }),
+  return apiClient(`/asign/${assessmentId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({ candidateUserId }), // অবশ্যই অবজেক্টকে JSON.stringify করতে হবে
+  });
+};
+export const getCandidates = () => {
+  return apiClient("/users/candidates", {
+    method: "GET",
+  });
 };

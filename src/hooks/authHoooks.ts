@@ -7,6 +7,7 @@ import {
   getAssessmentById,
   getAssessmentQuestions,
   getAssessments,
+  getCandidates,
   getMe,
   getPaymentByAssessment,
   getQuestions,
@@ -177,10 +178,17 @@ export const useAssignCandidate = () => {
   return useMutation({
     mutationFn: ({
       assessmentId,
-      candidateId,
+      candidateUserId,
     }: {
       assessmentId: string;
-      candidateId: string;
-    }) => assignCandidate(assessmentId, candidateId),
+      candidateUserId: string;
+    }) => assignCandidate(assessmentId, candidateUserId),
+  });
+};
+
+export const useGetCandidates = () => {
+  return useQuery({
+    queryKey: ["candidates"],
+    queryFn: getCandidates,
   });
 };
