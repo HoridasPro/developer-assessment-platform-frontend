@@ -40,7 +40,9 @@ export default function CandidateSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/dashboard/candidate/myAssignedAssessments"></Link>}
+                render={
+                  <Link href="/dashboard/candidate/myAssignedAssessments"></Link>
+                }
               >
                 <Package className="h-5 w-5" />
                 <span>My assigned assessments</span>
@@ -49,10 +51,10 @@ export default function CandidateSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/dashboard/payments"></Link>}
+                render={<Link href="/dashboard/candidate/assessments"></Link>}
               >
                 <CreditCard className="h-5 w-5" />
-                <span>Payments</span>
+                <span>Assessments</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 

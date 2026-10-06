@@ -1,11 +1,22 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 "use client";
 
+import { toast } from "@/components/ui/toast";
+import {
+  useAcceptInvitation,
+  useGetInvitationAssessments,
+  useStartAssessment,
+} from "@/hooks";
 import { FileText } from "lucide-react";
-import { useGetInvitationAssessments } from "@/hooks/candidateHooks";
+import Link from "next/link";
 
 export default function InvitationAssessmentPage() {
   const { data, isLoading, isError } = useGetInvitationAssessments();
+
+  const { mutate: acceptInvitation, isPending: isAccepting } =
+    useAcceptInvitation();
+  const { mutate: startAssessment, isPending: isStarting } =
+    useStartAssessment();
 
   if (isLoading) {
     return (
@@ -34,6 +45,8 @@ export default function InvitationAssessmentPage() {
   }
 
   const assessments = data?.data ?? [];
+
+  console.log("ASSIGNED ASSESSMENTS:", assessments);
 
   const formatDate = (date?: string) => {
     if (!date) return "N/A";
@@ -255,18 +268,40 @@ export default function InvitationAssessmentPage() {
                         {invitation.status === "PENDING" ? (
                           <button
                             type="button"
-                            className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-2 py-1 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            onClick={() =>
+                              acceptInvitation(invitation.id, {
+                                onSuccess: () => {
+                                  toast.add({
+                                    title: "Invitation accepted successfully!",
+                                    description:
+                                      "The invitation has been accepted.",
+                                    type: "success",
+                                  });
+                                },
+                                onError: (error: any) => {
+                                  toast.add({
+                                    title: "Failed to accept invitation.",
+                                    description:
+                                      error?.message ||
+                                      "Something went wrong. Please try again.",
+                                    type: "error",
+                                  });
+                                },
+                              })
+                            }
+                            disabled={isAccepting}
+                            className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-2 py-1 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                           >
-                            Accept
+                            {isAccepting ? "Accepting..." : "Accept"}
                           </button>
                         ) : invitation.attemptStatus === "IN_PROGRESS" ? (
                           /* IN_PROGRESS → Continue */
-                          <button
-                            type="button"
+                          <Link
+                            href={`/dashboard/candidate/assessments/${invitation.attemptId}`}
                             className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                           >
                             Continue Assessment
-                          </button>
+                          </Link>
                         ) : invitation.attemptStatus === "COMPLETED" ? (
                           /* COMPLETED → View Result */
                           <button
@@ -277,11 +312,40 @@ export default function InvitationAssessmentPage() {
                           </button>
                         ) : invitation.status === "ACCEPTED" ? (
                           /* ACCEPTED + NOT_STARTED → Start */
+                          // <button
+                          //   type="button"
+                          //   className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                          // >
+                          //   Start Assessment
+                          // </button>
+
                           <button
                             type="button"
+                            onClick={() =>
+                              startAssessment(invitation.id, {
+                                onSuccess: () => {
+                                  toast.add({
+                                    title: "Assessment Start successfully!",
+                                    description:
+                                      "The assessment has been started.",
+                                    type: "success",
+                                  });
+                                },
+                                onError: (error: any) => {
+                                  toast.add({
+                                    title: "Failed to start assessment.",
+                                    description:
+                                      error?.message ||
+                                      "Something went wrong. Please try again.",
+                                    type: "error",
+                                  });
+                                },
+                              })
+                            }
+                            disabled={isStarting}
                             className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                           >
-                            Start Assessment
+                            {isStarting ? "Starting..." : "Start"}
                           </button>
                         ) : (
                           <span className="text-sm text-muted-foreground">

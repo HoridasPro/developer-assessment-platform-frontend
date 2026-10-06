@@ -1,2 +1,2 @@
-export * from "./authHoooks"
-export * from "./"
+export * from "./authHoooks";
+export * from "./candidateHooks";

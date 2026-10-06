@@ -4,10 +4,13 @@ import {
   confirmPayment,
   createAssessmentPayload,
   createQuestion,
+  evaluateAnswers,
   getAssessmentById,
   getAssessmentQuestions,
   getAssessments,
+  getAttemptDetails,
   getCandidates,
+  getCompanyAttempts,
   getMe,
   getPaymentByAssessment,
   getQuestions,
@@ -21,6 +24,7 @@ import {
   verifyLoginOtp,
 } from "@/api";
 import { Assessment } from "@/types/assessmentPayload";
+import { EvaluateAnswersPayload } from "@/types/evaluateAnsPayload";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -190,5 +194,32 @@ export const useGetCandidates = () => {
   return useQuery({
     queryKey: ["candidates"],
     queryFn: getCandidates,
+  });
+};
+
+export const useGetAttemptDetails = (attemptId: string) => {
+  return useQuery({
+    queryKey: ["attempt-details", attemptId],
+    queryFn: () => getAttemptDetails(attemptId),
+    enabled: !!attemptId,
+  });
+};
+
+export const useGetCompanyAttempts = () => {
+  return useQuery({
+    queryKey: ["company-attempts"],
+    queryFn: getCompanyAttempts,
+  });
+};
+
+export const useEvaluateAnswers = () => {
+  return useMutation({
+    mutationFn: ({
+      attemptId,
+      payload,
+    }: {
+      attemptId: string;
+      payload: EvaluateAnswersPayload;
+    }) => evaluateAnswers(attemptId, payload),
   });
 };

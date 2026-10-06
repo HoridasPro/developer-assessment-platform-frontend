@@ -1,4 +1,5 @@
 import apiClient from "@/lib/apiClient";
+import { SubmitAnswerPayload } from "@/types/submitAnswerPayload";
 
 export const getInvitationAssessment = () => {
   return apiClient("invitations/my-assigned", {
@@ -9,5 +10,36 @@ export const getInvitationAssessment = () => {
 export const acceptInvitation = (invitationId: string) => {
   return apiClient(`/invitations/status/${invitationId}`, {
     method: "PATCH",
+    body: JSON.stringify({
+      status: "ACCEPTED",
+    }),
+  });
+};
+
+export const startAssessment = (invitationId: string) => {
+  return apiClient(`/invitations/start/${invitationId}`, {
+    method: "POST",
+  });
+};
+
+export const getAttemptQuestions = (attemptId: string) => {
+  return apiClient(`/attempts/questions/${attemptId}`, {
+    method: "GET",
+  });
+};
+
+export const submitAnswer = (
+  attemptId: string,
+  payload: SubmitAnswerPayload,
+) => {
+  return apiClient(`/attempts/questions/answer/${attemptId}`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+};
+
+export const submitAssessment = (attemptId: string) => {
+  return apiClient(`/attempts/submit/${attemptId}`, {
+    method: "POST",
   });
 };

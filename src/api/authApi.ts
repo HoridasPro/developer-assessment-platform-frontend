@@ -1,7 +1,10 @@
 import apiClient from "@/lib/apiClient";
 import { AddQuestionsPayload } from "@/types/addQuestionPayload";
 import { Assessment } from "@/types/assessmentPayload";
+import { CompanyAttemptsResponse } from "@/types/companyAttemptRespons";
 import { TCreateAssessmentPayload } from "@/types/createAssessmentPayload";
+import { EvaluateAnswersPayload } from "@/types/evaluateAnsPayload";
+import { AttemptDetailsResponse } from "@/types/getAttemptDetails";
 import { loginPayload } from "@/types/loginPayload";
 import { CreateQuestionPayload, Question } from "@/types/question";
 import { registerPayload } from "@/types/registerPayload";
@@ -141,6 +144,28 @@ export const assignCandidate = (
 
 export const getCandidates = () => {
   return apiClient("/users/candidates", {
+    method: "GET",
+  });
+};
+
+export const getAttemptDetails = (attemptId: string) => {
+  return apiClient<AttemptDetailsResponse>(`/attempts/${attemptId}`, {
+    method: "GET",
+  });
+};
+
+export const evaluateAnswers = (
+  attemptId: string,
+  payload: EvaluateAnswersPayload,
+) => {
+  return apiClient(`/attempts/evaluate-answers/${attemptId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+};
+
+export const getCompanyAttempts = () => {
+  return apiClient<CompanyAttemptsResponse>("/attempts", {
     method: "GET",
   });
 };
