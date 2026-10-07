@@ -4,6 +4,7 @@ import {
   getAttemptQuestions,
   getAttemptResult,
   getInvitationAssessment,
+  getMyAllResults,
   startAssessment,
   submitAnswer,
   submitAssessment,
@@ -85,5 +86,12 @@ export const useGetAttemptResult = (attemptId: string) => {
 export const useCancelAttempt = () => {
   return useMutation({
     mutationFn: (attemptId: string) => cancelAttempt(attemptId),
+  });
+};
+
+export const useGetMyAllResults = () => {
+  return useQuery({
+    queryKey: ["my-results"],
+    queryFn: getMyAllResults,
   });
 };

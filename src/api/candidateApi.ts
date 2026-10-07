@@ -55,3 +55,9 @@ export const cancelAttempt = (attemptId: string) => {
     method: "PATCH",
   });
 };
+
+export const getMyAllResults = () => {
+  return apiClient("/attempts/my-results", {
+    method: "GET",
+  });
+};

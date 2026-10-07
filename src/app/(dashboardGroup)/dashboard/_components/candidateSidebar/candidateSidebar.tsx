@@ -22,7 +22,9 @@ export default function CandidateSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b px-6 py-5">
-        <h2 className="text-2xl font-bold text-blue-600">DevAssessment</h2>
+        <Link href="/" className="text-2xl font-bold text-blue-600">
+          DevAssessment
+        </Link>
         <p className="text-sm text-gray-500">Candidate Dashboard</p>
       </SidebarHeader>
 
@@ -60,10 +62,10 @@ export default function CandidateSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/dashboard/customer-profile"></Link>}
+                render={<Link href="/dashboard/candidate/allMyResults"></Link>}
               >
                 <User className="h-5 w-5" />
-                <span>Profile</span>
+                <span>All my results</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
