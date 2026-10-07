@@ -32,22 +32,11 @@ export default function CandidateSidebar() {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton render={<Link href="/dashboard"></Link>}>
-                <Link href="/dashboard">
+              <SidebarMenuButton render={<Link href="/dashboard/candidate/"></Link>}>
+      
                   <LayoutDashboard className="h-5 w-5" />
                   <span>Dashboard</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                render={
-                  <Link href="/dashboard/candidate/myAssignedAssessments"></Link>
-                }
-              >
-                <Package className="h-5 w-5" />
-                <span>My assigned assessments</span>
+           
               </SidebarMenuButton>
             </SidebarMenuItem>
 
@@ -65,7 +54,7 @@ export default function CandidateSidebar() {
                 render={<Link href="/dashboard/candidate/allMyResults"></Link>}
               >
                 <User className="h-5 w-5" />
-                <span>All my results</span>
+                <span>All my history</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

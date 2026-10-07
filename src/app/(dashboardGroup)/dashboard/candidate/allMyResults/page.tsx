@@ -55,7 +55,7 @@ export default function CandidateResultsPage() {
   const failedResults = totalResults - passedResults;
 
   return (
-    <div className="min-h-screen bg-background p-4 text-foreground sm:p-6 lg:p-8">
+    <div className="min-h-screen p-4 text-foreground sm:p-6 lg:p-8">
       <div className="mx-auto w-full max-w-7xl">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
@@ -310,7 +310,7 @@ export default function CandidateResultsPage() {
                             href={`/dashboard/candidate/assessments/${result.attemptId}/result`}
                             className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                           >
-                            View Result
+                          view Result
                             <span aria-hidden="true">→</span>
                           </Link>
                         </td>
