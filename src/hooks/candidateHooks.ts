@@ -1,6 +1,8 @@
 import {
   acceptInvitation,
+  cancelAttempt,
   getAttemptQuestions,
+  getAttemptResult,
   getInvitationAssessment,
   startAssessment,
   submitAnswer,
@@ -69,5 +71,19 @@ export const useSubmitAnswer = () => {
 export const useSubmitAssessment = () => {
   return useMutation({
     mutationFn: (attemptId: string) => submitAssessment(attemptId),
+  });
+};
+
+export const useGetAttemptResult = (attemptId: string) => {
+  return useQuery({
+    queryKey: ["attempt-result", attemptId],
+    queryFn: () => getAttemptResult(attemptId),
+    enabled: !!attemptId,
+  });
+};
+
+export const useCancelAttempt = () => {
+  return useMutation({
+    mutationFn: (attemptId: string) => cancelAttempt(attemptId),
   });
 };

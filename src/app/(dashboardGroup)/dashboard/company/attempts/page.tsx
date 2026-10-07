@@ -1,3 +1,5 @@
+ 
+
 "use client";
 
 import { useGetCompanyAttempts } from "@/hooks";
@@ -5,6 +7,7 @@ import Link from "next/link";
 
 export default function CompanyAttemptsPage() {
   const { data, isLoading, isError } = useGetCompanyAttempts();
+
 
   if (isLoading) {
     return <div className="p-6">Loading attempts...</div>;
@@ -51,19 +54,17 @@ export default function CompanyAttemptsPage() {
               {attempts.map((attempt) => (
                 <tr key={attempt.id} className="border-b last:border-0">
                   <td className="px-4 py-4">
-                    <div>
-                      <p className="font-medium">{attempt.candidate.name}</p>
+                    <p className="font-medium">{attempt.candidate.name}</p>
 
-                      <p className="text-sm text-muted-foreground">
-                        {attempt.candidate.email}
-                      </p>
-                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {attempt.candidate.email}
+                    </p>
                   </td>
 
                   <td className="px-4 py-4">{attempt.assessment.title}</td>
 
                   <td className="px-4 py-4">
-                    <span className="rounded-md bg-green-100 px-2 py-1 text-sm text-green-700">
+                    <span className="rounded-md bg-yellow-100 px-2 py-1 text-sm text-yellow-700">
                       {attempt.status}
                     </span>
                   </td>

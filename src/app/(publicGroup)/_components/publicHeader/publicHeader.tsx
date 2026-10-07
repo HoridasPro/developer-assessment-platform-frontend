@@ -143,7 +143,7 @@ const PublicHeader = () => {
           {!isLoading && data && (
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <button
+                <Button
                   type="button"
                   title={data?.data?.name}
                   className="flex items-center justify-center rounded-full border p-1 cursor-pointer"
@@ -161,7 +161,7 @@ const PublicHeader = () => {
                       {data?.data?.name?.charAt(0)?.toUpperCase()}
                     </div>
                   )}
-                </button>
+                </Button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end" className="w-48">

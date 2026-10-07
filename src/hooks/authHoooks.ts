@@ -16,6 +16,7 @@ import {
   getQuestions,
   initiatePayment,
   publishAssessment,
+  submitEvaluate,
   userGoogleAuthLogin,
   userLogin,
   userLogout,
@@ -221,5 +222,23 @@ export const useEvaluateAnswers = () => {
       attemptId: string;
       payload: EvaluateAnswersPayload;
     }) => evaluateAnswers(attemptId, payload),
+  });
+};
+
+export const useSubmitEvaluate = () => {
+  return useMutation({
+    mutationFn: ({
+      attemptId,
+      payload,
+    }: {
+      attemptId: string;
+      payload: {
+        answers: {
+          questionId: string;
+          marks: number;
+          type: "WRITTEN" | "CODING";
+        }[];
+      };
+    }) => submitEvaluate(attemptId, payload),
   });
 };

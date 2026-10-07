@@ -54,7 +54,7 @@ export default function CandidateSidebar() {
                 render={<Link href="/dashboard/candidate/assessments"></Link>}
               >
                 <CreditCard className="h-5 w-5" />
-                <span>Assessments</span>
+                <span>My Assessments</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 

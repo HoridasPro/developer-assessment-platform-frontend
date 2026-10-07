@@ -4,6 +4,7 @@
 import { toast } from "@/components/ui/toast";
 import {
   useAcceptInvitation,
+  useCancelAttempt,
   useGetInvitationAssessments,
   useStartAssessment,
 } from "@/hooks";
@@ -15,8 +16,11 @@ export default function InvitationAssessmentPage() {
 
   const { mutate: acceptInvitation, isPending: isAccepting } =
     useAcceptInvitation();
+
   const { mutate: startAssessment, isPending: isStarting } =
     useStartAssessment();
+
+  const { mutate: cancelAttempt, isPending: isCancelling } = useCancelAttempt();
 
   if (isLoading) {
     return (
@@ -146,6 +150,10 @@ export default function InvitationAssessmentPage() {
               <tbody className="divide-y">
                 {assessments.map((invitation: any, index: number) => {
                   const assessment = invitation.assessment;
+                  const now = new Date();
+
+                  const isExpired =
+                    !!assessment?.endAt && new Date(assessment.endAt) < now;
 
                   return (
                     <tr
@@ -255,7 +263,9 @@ export default function InvitationAssessmentPage() {
                               ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
                               : invitation.attemptStatus === "COMPLETED"
                                 ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                                : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                                : invitation.attemptStatus === "CANCELLED"
+                                  ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                                  : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
                           }`}
                         >
                           {invitation.attemptStatus ?? "NOT_STARTED"}
@@ -263,9 +273,15 @@ export default function InvitationAssessmentPage() {
                       </td>
 
                       {/* Action */}
+                      {/* Action */}
                       <td className="px-5 py-5 text-right align-top">
-                        {/* PENDING → Accept Invitation */}
-                        {invitation.status === "PENDING" ? (
+                        {/* PENDING + Expired */}
+                        {invitation.status === "PENDING" && isExpired ? (
+                          <span className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-red-100 px-4 py-2 text-sm font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                            Expired
+                          </span>
+                        ) : invitation.status === "PENDING" ? (
+                          /* PENDING → Accept Invitation */
                           <button
                             type="button"
                             onClick={() =>
@@ -295,58 +311,79 @@ export default function InvitationAssessmentPage() {
                             {isAccepting ? "Accepting..." : "Accept"}
                           </button>
                         ) : invitation.attemptStatus === "IN_PROGRESS" ? (
-                          /* IN_PROGRESS → Continue */
-                          <Link
-                            href={`/dashboard/candidate/assessments/${invitation.attemptId}`}
-                            className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                          >
-                            Continue Assessment
-                          </Link>
+                          /* IN_PROGRESS → Continue / Cancel */
+                          <div className="flex items-center justify-end gap-2">
+                            <Link
+                              href={`/dashboard/candidate/assessments/${invitation.attemptId}`}
+                              className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                            >
+                              Continue
+                            </Link>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const confirmed = window.confirm(
+                                  "Are you sure you want to cancel this assessment?",
+                                );
+
+                                if (!confirmed) return;
+
+                                cancelAttempt(invitation.attemptId, {
+                                  onSuccess: () => {
+                                    toast.add({
+                                      title: "Assessment cancelled",
+                                      description:
+                                        "Your assessment attempt has been cancelled successfully.",
+                                      type: "success",
+                                    });
+                                  },
+
+                                  onError: (error: any) => {
+                                    toast.add({
+                                      title: "Failed to cancel assessment",
+                                      description:
+                                        error?.message ||
+                                        "Something went wrong. Please try again.",
+                                      type: "error",
+                                    });
+                                  },
+                                });
+                              }}
+                              disabled={isCancelling}
+                              className="inline-flex whitespace-nowrap items-center justify-center rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/30"
+                            >
+                              {isCancelling ? "Cancelling..." : "Cancel"}
+                            </button>
+                          </div>
+                        ) : invitation.attemptStatus === "SUBMITTED" ? (
+                          /* SUBMITTED → Evaluation Pending */
+                          <span className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-yellow-100 px-4 py-2 text-sm font-medium text-yellow-800">
+                            Evaluation Pending
+                          </span>
                         ) : invitation.attemptStatus === "COMPLETED" ? (
                           /* COMPLETED → View Result */
-                          <button
-                            type="button"
-                            className="inline-flex whitespace-nowrap items-center justify-center rounded-md border bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                          <Link
+                            href={`/dashboard/candidate/assessments/${invitation.attemptId}/result`}
+                            className="inline-flex whitespace-nowrap items-center justify-center rounded-md border bg-background px-4 py-2 text-sm font-medium"
                           >
                             View Result
-                          </button>
-                        ) : invitation.status === "ACCEPTED" ? (
-                          /* ACCEPTED + NOT_STARTED → Start */
-                          // <button
-                          //   type="button"
-                          //   className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                          // >
-                          //   Start Assessment
-                          // </button>
-
+                          </Link>
+                        ) : invitation.status === "ACCEPTED" && !isExpired ? (
+                          /* ACCEPTED → Start */
                           <button
                             type="button"
-                            onClick={() =>
-                              startAssessment(invitation.id, {
-                                onSuccess: () => {
-                                  toast.add({
-                                    title: "Assessment Start successfully!",
-                                    description:
-                                      "The assessment has been started.",
-                                    type: "success",
-                                  });
-                                },
-                                onError: (error: any) => {
-                                  toast.add({
-                                    title: "Failed to start assessment.",
-                                    description:
-                                      error?.message ||
-                                      "Something went wrong. Please try again.",
-                                    type: "error",
-                                  });
-                                },
-                              })
-                            }
+                            onClick={() => startAssessment(invitation.id)}
                             disabled={isStarting}
-                            className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
                           >
                             {isStarting ? "Starting..." : "Start"}
                           </button>
+                        ) : isExpired ? (
+                          /* Expired */
+                          <span className="inline-flex whitespace-nowrap items-center justify-center rounded-md bg-red-100 px-4 py-2 text-sm font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                            Expired
+                          </span>
                         ) : (
                           <span className="text-sm text-muted-foreground">
                             Not Available

@@ -117,9 +117,6 @@ export default function CompanySidebar() {
                         </SidebarMenuButton>
                       </SidebarMenuItem>
 
-                      
-
-
                       <SidebarMenuItem>
                         <SidebarMenuButton
                           render={
@@ -162,6 +159,16 @@ export default function CompanySidebar() {
                         >
                           <Archive className="h-4 w-4" />
                           <span>Archived</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          render={<Link href="/dashboard/company/attempts" />}
+                          tooltip="Attempts"
+                        >
+                          <Archive className="h-4 w-4" />
+                          <span>Attempts</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     </SidebarMenu>

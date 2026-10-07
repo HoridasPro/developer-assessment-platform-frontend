@@ -43,3 +43,15 @@ export const submitAssessment = (attemptId: string) => {
     method: "POST",
   });
 };
+
+export const getAttemptResult = (attemptId: string) => {
+  return apiClient(`/attempts/result/${attemptId}`, {
+    method: "GET",
+  });
+};
+
+export const cancelAttempt = (attemptId: string) => {
+  return apiClient(`/attempts/cancel/${attemptId}`, {
+    method: "PATCH",
+  });
+};

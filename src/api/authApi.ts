@@ -169,3 +169,19 @@ export const getCompanyAttempts = () => {
     method: "GET",
   });
 };
+
+export const submitEvaluate = (
+  attemptId: string,
+  payload: {
+    answers: {
+      questionId: string;
+      marks: number;
+      type: "WRITTEN" | "CODING";
+    }[];
+  },
+) => {
+  return apiClient(`/attempts/evaluate/${attemptId}`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+};
