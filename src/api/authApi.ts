@@ -8,6 +8,7 @@ import { AttemptDetailsResponse } from "@/types/getAttemptDetails";
 import { loginPayload } from "@/types/loginPayload";
 import { CreateQuestionPayload, Question } from "@/types/question";
 import { registerPayload } from "@/types/registerPayload";
+import { UpdateQuestionPayload } from "@/types/updateQuestionPayload";
 import { verifyEmailOtpPayload } from "@/types/verifyEmailOtpPayload";
 
 export const userLogin = (payload: loginPayload) => {
@@ -189,5 +190,14 @@ export const submitEvaluate = (
 export const deleteQuestion = (questionId: string) => {
   return apiClient(`/questions/${questionId}`, {
     method: "DELETE",
+  });
+};
+
+export const updateQuestion = (payload: UpdateQuestionPayload) => {
+  return apiClient("/questions/bulk-update", {
+    method: "PATCH",
+    body: JSON.stringify({
+      questions: [payload],
+    }),
   });
 };

@@ -9,6 +9,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
 
 const AllQuestionsPage = () => {
   const { data, isLoading, isError, refetch } = useGetQuestions();
@@ -143,11 +144,11 @@ const AllQuestionsPage = () => {
             <thead className="border-b border-border bg-muted/40">
               <tr>
                 <th className="w-16 px-4 py-4 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  SI No.
+                  SI
                 </th>
 
                 <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Question
+                  Title
                 </th>
 
                 <th className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -248,13 +249,14 @@ const AllQuestionsPage = () => {
                     <td className="px-5 py-4 align-top">
                       <div className="flex justify-end gap-2">
                         {/* Edit */}
-                        <button
+                        <Link
                           type="button"
+                          href={`/dashboard/company/questions/${question.id}/edit`}
                           className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition hover:bg-muted hover:text-foreground"
                           title="Edit question"
                         >
                           <Pencil className="h-4 w-4" />
-                        </button>
+                        </Link>
 
                         {/* Delete */}
                         <button
@@ -354,13 +356,12 @@ const AllQuestionsPage = () => {
               {/* Actions */}
               <div className="mt-4 flex gap-2">
                 {/* Edit */}
-                <button
-                  type="button"
+                <Link
+                  href={`/dashboard/company/questions/${question.id}/edit`}
                   className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background text-sm font-medium text-foreground transition hover:bg-muted"
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit
-                </button>
+                </Link>
 
                 {/* Delete */}
                 <button
@@ -370,15 +371,9 @@ const AllQuestionsPage = () => {
                   className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/5 text-sm font-medium text-red-500 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isDeleting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Deleting...
-                    </>
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <>
-                      <Trash2 className="h-4 w-4" />
-                      Delete
-                    </>
+                    <Trash2 className="h-4 w-4" />
                   )}
                 </button>
               </div>

@@ -18,6 +18,7 @@ import {
   initiatePayment,
   publishAssessment,
   submitEvaluate,
+  updateQuestion,
   userGoogleAuthLogin,
   userLogin,
   userLogout,
@@ -248,5 +249,11 @@ export const useSubmitEvaluate = () => {
 export const useDeleteQuestion = () => {
   return useMutation({
     mutationFn: (questionId: string) => deleteQuestion(questionId),
+  });
+};
+
+export const useUpdateQuestion = () => {
+  return useMutation({
+    mutationFn: updateQuestion,
   });
 };
