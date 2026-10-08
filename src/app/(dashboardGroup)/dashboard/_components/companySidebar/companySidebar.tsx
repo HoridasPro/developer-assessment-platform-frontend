@@ -80,15 +80,14 @@ export default function CompanySidebar() {
 
                   <CollapsibleContent>
                     <SidebarMenu className="ml-4 mt-1 border-l pl-3">
-                      {/* All Assessments */}
                       <SidebarMenuItem>
                         <SidebarMenuButton
                           render={
-                            <Link href="/dashboard/company/allAssessments" />
+                            <Link href="/dashboard/company/assessments" />
                           }
-                          tooltip="All Assessments"
+                          tooltip="Assessments"
                         >
-                          <FileText className="h-4 w-4" />
+                          <ClipboardList className="h-4 w-4" />
                           <span>All Assessments</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -103,18 +102,6 @@ export default function CompanySidebar() {
                         >
                           <Plus className="h-4 w-4" />
                           <span>Create Assessment</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-
-                      <SidebarMenuItem>
-                        <SidebarMenuButton
-                          render={
-                            <Link href="/dashboard/company/assessments" />
-                          }
-                          tooltip="Assessments"
-                        >
-                          <ClipboardList className="h-4 w-4" />
-                          <span>Assessments</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
 
@@ -143,7 +130,9 @@ export default function CompanySidebar() {
                       {/* Archived */}
                       <SidebarMenuItem>
                         <SidebarMenuButton
-                          render={<Link href="/dashboard/company/archived" />}
+                          render={
+                            <Link href="/dashboard/company/assessments/archived" />
+                          }
                           tooltip="Archived"
                         >
                           <Archive className="h-4 w-4" />
@@ -211,7 +200,7 @@ export default function CompanySidebar() {
               </Collapsible>
 
               {/* Problem Bank */}
-              <SidebarMenuItem>
+              {/* <SidebarMenuItem>
                 <SidebarMenuButton
                   render={<Link href="/dashboard/company/problemBank" />}
                   tooltip="Problem Bank"
@@ -219,10 +208,10 @@ export default function CompanySidebar() {
                   <FileText className="h-5 w-5" />
                   <span>Problem Bank</span>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </SidebarMenuItem> */}
 
               {/* Candidates */}
-              <SidebarMenuItem>
+              {/* <SidebarMenuItem>
                 <SidebarMenuButton
                   render={<Link href="/dashboard/candidates" />}
                   tooltip="Candidates"
@@ -230,7 +219,7 @@ export default function CompanySidebar() {
                   <Users className="h-5 w-5" />
                   <span>Candidates</span>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </SidebarMenuItem> */}
 
               {/* Reports */}
               <SidebarMenuItem>

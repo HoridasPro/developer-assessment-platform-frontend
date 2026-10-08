@@ -6,6 +6,7 @@ import {
   createQuestion,
   deleteQuestion,
   evaluateAnswers,
+  getArchivedAssessments,
   getAssessmentById,
   getAssessmentQuestions,
   getAssessments,
@@ -17,6 +18,7 @@ import {
   getQuestions,
   initiatePayment,
   publishAssessment,
+  softDeleteAssessment,
   submitEvaluate,
   updateQuestion,
   userGoogleAuthLogin,
@@ -255,5 +257,18 @@ export const useDeleteQuestion = () => {
 export const useUpdateQuestion = () => {
   return useMutation({
     mutationFn: updateQuestion,
+  });
+};
+
+export const useSoftDeleteAssessment = () => {
+  return useMutation({
+    mutationFn: (assessmentId: string) => softDeleteAssessment(assessmentId),
+  });
+};
+
+export const useGetArchivedAssessments = () => {
+  return useQuery({
+    queryKey: ["archived-assessments"],
+    queryFn: getArchivedAssessments,
   });
 };

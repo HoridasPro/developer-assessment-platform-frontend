@@ -201,3 +201,14 @@ export const updateQuestion = (payload: UpdateQuestionPayload) => {
     }),
   });
 };
+
+export const softDeleteAssessment = (assessmentId: string) => {
+  return apiClient(`/assessment/${assessmentId}`, {
+    method: "DELETE",
+  });
+};
+export const getArchivedAssessments = () => {
+  return apiClient("/assessments/archived", {
+    method: "GET",
+  });
+};
