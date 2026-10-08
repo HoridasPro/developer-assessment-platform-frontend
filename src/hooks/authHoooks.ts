@@ -9,12 +9,15 @@ import {
   getArchivedAssessments,
   getAssessmentById,
   getAssessmentQuestions,
+  getAssessmentReport,
   getAssessments,
+  getAssessmentsWithPagination,
   getAttemptDetails,
   getCandidates,
   getCompanyAttempts,
   getMe,
   getPaymentByAssessment,
+  getPaymentHistory,
   getQuestions,
   initiatePayment,
   publishAssessment,
@@ -32,7 +35,6 @@ import { Assessment } from "@/types/assessmentPayload";
 import { EvaluateAnswersPayload } from "@/types/evaluateAnsPayload";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Question } from "@/types/question";
 
 export const useLogin = () => {
   return useMutation({
@@ -110,6 +112,13 @@ export const useGetAssessments = () => {
     queryKey: ["assessments"],
     queryFn: getAssessments,
     select: (data: any) => (Array.isArray(data) ? data : data?.data || []),
+  });
+};
+
+export const useGetAssessmentsWithPagination = (page = 1, limit = 5) => {
+  return useQuery({
+    queryKey: ["assessments", page, limit],
+    queryFn: () => getAssessmentsWithPagination(page, limit),
   });
 };
 
@@ -270,5 +279,30 @@ export const useGetArchivedAssessments = () => {
   return useQuery({
     queryKey: ["archived-assessments"],
     queryFn: getArchivedAssessments,
+  });
+};
+
+export const useGetPaymentHistory = () => {
+  return useQuery({
+    queryKey: ["payment-history"],
+    queryFn: getPaymentHistory,
+  });
+};
+
+ 
+ 
+export const useGetAssessmentReport = (
+  assessmentId: string,
+) => {
+  return useQuery({
+    queryKey: [
+      "assessment-report",
+      assessmentId,
+    ],
+
+    queryFn: () =>
+      getAssessmentReport(assessmentId),
+
+    enabled: Boolean(assessmentId),
   });
 };

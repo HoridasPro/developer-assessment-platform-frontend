@@ -362,7 +362,7 @@ export default function CreateQuestionForm() {
                       isCorrect: false,
                     })
                   }
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto cursor-pointer"
                 >
                   <Plus className="mr-2 size-4" />
                   Add Option
@@ -403,7 +403,7 @@ export default function CreateQuestionForm() {
             <Button
               type="submit"
               disabled={createQuestion.isPending}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto cursor-pointer rounded-xl"
             >
               {createQuestion.isPending ? (
                 <>

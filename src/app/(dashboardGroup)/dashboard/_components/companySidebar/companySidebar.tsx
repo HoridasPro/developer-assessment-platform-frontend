@@ -11,7 +11,6 @@ import {
   LogOut,
   Plus,
   Settings,
-  Users,
 } from "lucide-react";
 
 import {
@@ -200,35 +199,35 @@ export default function CompanySidebar() {
               </Collapsible>
 
               {/* Problem Bank */}
-              {/* <SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton
-                  render={<Link href="/dashboard/company/problemBank" />}
-                  tooltip="Problem Bank"
+                  render={
+                    <Link href="/dashboard/company/payments/paymentHistory" />
+                  }
+                  tooltip="Payment History"
                 >
                   <FileText className="h-5 w-5" />
-                  <span>Problem Bank</span>
+                  <span>Payment History</span>
                 </SidebarMenuButton>
-              </SidebarMenuItem> */}
-
-              {/* Candidates */}
-              {/* <SidebarMenuItem>
-                <SidebarMenuButton
-                  render={<Link href="/dashboard/candidates" />}
-                  tooltip="Candidates"
-                >
-                  <Users className="h-5 w-5" />
-                  <span>Candidates</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem> */}
+              </SidebarMenuItem>
 
               {/* Reports */}
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  render={<Link href="/dashboard/reports" />}
+                  render={<Link href="/dashboard/company/reports" />}
                   tooltip="Reports"
                 >
                   <BarChart3 className="h-5 w-5" />
                   <span>Reports</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  render={<Link href="/dashboard/company/candidates" />}
+                  tooltip="Candidates"
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  <span>Candidates</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 

@@ -61,6 +61,12 @@ export const getAssessments = async (): Promise<Assessment[]> => {
   return response?.data || response || [];
 };
 
+export const getAssessmentsWithPagination = (page = 1, limit = 5) => {
+  return apiClient(`/assessments?page=${page}&limit=${limit}`, {
+    method: "GET",
+  });
+};
+
 export const addQuestionsToAssessment = ({
   assessmentId,
   options,
@@ -209,6 +215,18 @@ export const softDeleteAssessment = (assessmentId: string) => {
 };
 export const getArchivedAssessments = () => {
   return apiClient("/assessments/archived", {
+    method: "GET",
+  });
+};
+
+export const getPaymentHistory = () => {
+  return apiClient("/payments", {
+    method: "GET",
+  });
+};
+
+export const getAssessmentReport = (assessmentId: string) => {
+  return apiClient(`assessment/${assessmentId}`, {
     method: "GET",
   });
 };

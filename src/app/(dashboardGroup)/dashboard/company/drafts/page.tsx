@@ -67,7 +67,7 @@ export default function DraftAssessmentsPage() {
           </p>
 
           <Link
-            href="/dashboard/company/assessments/create"
+            href="/dashboard/company/createAssessment"
             className="mt-5 inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent"
           >
             Create Assessment

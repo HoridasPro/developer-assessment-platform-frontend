@@ -358,7 +358,7 @@ const AllQuestionsPage = () => {
                 {/* Edit */}
                 <Link
                   href={`/dashboard/company/questions/${question.id}/edit`}
-                  className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background text-sm font-medium text-foreground transition hover:bg-muted"
+                  className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background text-sm font-medium text-foreground transition hover:bg-muted cursor-pointer"
                 >
                   <Pencil className="h-4 w-4" />
                 </Link>
@@ -368,7 +368,7 @@ const AllQuestionsPage = () => {
                   type="button"
                   disabled={isDeleting}
                   onClick={() => handleDelete(question.id)}
-                  className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/5 text-sm font-medium text-red-500 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/5 text-sm font-medium text-red-500 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
                 >
                   {isDeleting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
