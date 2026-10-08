@@ -1,192 +1,192 @@
-// /** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
-// "use client";
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
+"use client";
 
-// import Link from "next/link";
-// import { Eye, FileText, Clock, Award } from "lucide-react";
-// import { useGetAssessments } from "@/hooks";
+import Link from "next/link";
+import { Eye, FileText, Clock, Award } from "lucide-react";
+import { useGetAssessments } from "@/hooks";
 
-// export default function PublishedAssessmentsPage() {
-//   const { data, isLoading, isError } = useGetAssessments();
+export default function PublishedAssessmentsPage() {
+  const { data, isLoading, isError } = useGetAssessments();
 
-//   const assessments = Array.isArray(data)
-//     ? data
-//     : Array.isArray((data as any)?.data)
-//       ? (data as any).data
-//       : [];
+  const assessments = Array.isArray(data)
+    ? data
+    : Array.isArray((data as any)?.data)
+      ? (data as any).data
+      : [];
 
-//   // শুধু PUBLISHED assessments
-//   const publishedAssessments = assessments.filter(
-//     (assessment: any) =>
-//       String(assessment.status).toUpperCase() === "PUBLISHED" &&
-//       assessment.isDeleted !== true,
-//   );
+  // শুধু PUBLISHED assessments
+  const publishedAssessments = assessments.filter(
+    (assessment: any) =>
+      String(assessment.status).toUpperCase() === "PUBLISHED" &&
+      assessment.isDeleted !== true,
+  );
 
-//   if (isLoading) {
-//     return (
-//       <div className="flex h-64 items-center justify-center p-6">
-//         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-//           <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-//           <span>Loading published assessments...</span>
-//         </div>
-//       </div>
-//     );
-//   }
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center p-6">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <span>Loading published assessments...</span>
+        </div>
+      </div>
+    );
+  }
 
-//   if (isError) {
-//     return (
-//       <div className="p-6">
-//         <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
-//           Failed to load published assessments. Please try again later.
-//         </div>
-//       </div>
-//     );
-//   }
+  if (isError) {
+    return (
+      <div className="p-6">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+          Failed to load published assessments. Please try again later.
+        </div>
+      </div>
+    );
+  }
 
-//   return (
-//     <div className="space-y-6 p-4 sm:p-6">
-//       {/* Header */}
-//       <div>
-//         <h1 className="text-2xl font-bold tracking-tight">
-//           Published Assessments
-//         </h1>
+  return (
+    <div className="space-y-6 p-4 sm:p-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">
+          Published Assessments
+        </h1>
 
-//         <p className="text-sm text-muted-foreground">
-//           View all assessments that have been published.
-//         </p>
-//       </div>
+        <p className="text-sm text-muted-foreground">
+          View all assessments that have been published.
+        </p>
+      </div>
 
-//       {/* Empty */}
-//       {publishedAssessments.length === 0 ? (
-//         <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed p-8 text-center">
-//           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-//             <FileText className="h-6 w-6 text-muted-foreground" />
-//           </div>
+      {/* Empty */}
+      {publishedAssessments.length === 0 ? (
+        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed p-8 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+            <FileText className="h-6 w-6 text-muted-foreground" />
+          </div>
 
-//           <h2 className="mt-4 text-lg font-semibold">
-//             No published assessments
-//           </h2>
+          <h2 className="mt-4 text-lg font-semibold">
+            No published assessments
+          </h2>
 
-//           <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-//             Assessments with published status will appear here.
-//           </p>
+          <p className="mt-1 max-w-sm text-sm text-muted-foreground">
+            Assessments with published status will appear here.
+          </p>
 
-//           <Link
-//             href="/dashboard/company/assessments"
-//             className="mt-5 inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent"
-//           >
-//             Back to Assessments
-//           </Link>
-//         </div>
-//       ) : (
-//         /* Table */
-//         <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm">
-//           <div className="relative w-full overflow-x-auto">
-//             <table className="w-full caption-bottom text-sm">
-//               <thead className="border-b bg-muted/50 text-xs uppercase text-muted-foreground">
-//                 <tr>
-//                   <th className="h-11 px-4 text-left align-middle font-medium">
-//                     Title & Description
-//                   </th>
+          <Link
+            href="/dashboard/company/assessments"
+            className="mt-5 inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent"
+          >
+            Back to Assessments
+          </Link>
+        </div>
+      ) : (
+        /* Table */
+        <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm">
+          <div className="relative w-full overflow-x-auto">
+            <table className="w-full caption-bottom text-sm">
+              <thead className="border-b bg-muted/50 text-xs uppercase text-muted-foreground">
+                <tr>
+                  <th className="h-11 px-4 text-left align-middle font-medium">
+                    Title & Description
+                  </th>
 
-//                   <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
-//                     Status
-//                   </th>
+                  <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
+                    Status
+                  </th>
 
-//                   <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
-//                     Duration
-//                   </th>
+                  <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
+                    Duration
+                  </th>
 
-//                   <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
-//                     Passing Score
-//                   </th>
+                  <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
+                    Passing Score
+                  </th>
 
-//                   <th className="h-11 px-4 text-right align-middle font-medium whitespace-nowrap">
-//                     Action
-//                   </th>
-//                 </tr>
-//               </thead>
+                  <th className="h-11 px-4 text-right align-middle font-medium whitespace-nowrap">
+                    Action
+                  </th>
+                </tr>
+              </thead>
 
-//               <tbody className="divide-y">
-//                 {publishedAssessments.map((assessment: any) => {
-//                   const id = assessment.id || assessment._id;
+              <tbody className="divide-y">
+                {publishedAssessments.map((assessment: any) => {
+                  const id = assessment.id || assessment._id;
 
-//                   return (
-//                     <tr
-//                       key={id}
-//                       className="transition-colors hover:bg-muted/40"
-//                     >
-//                       {/* Title */}
-//                       <td className="min-w-[220px] p-4 align-middle">
-//                         <div className="font-semibold text-foreground">
-//                           {assessment.title}
-//                         </div>
+                  return (
+                    <tr
+                      key={id}
+                      className="transition-colors hover:bg-muted/40"
+                    >
+                      {/* Title */}
+                      <td className="min-w-[220px] p-4 align-middle">
+                        <div className="font-semibold text-foreground">
+                          {assessment.title}
+                        </div>
 
-//                         {assessment.description && (
-//                           <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-//                             {assessment.description}
-//                           </p>
-//                         )}
-//                       </td>
+                        {assessment.description && (
+                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                            {assessment.description}
+                          </p>
+                        )}
+                      </td>
 
-//                       {/* Status */}
-//                       <td className="p-4 align-middle whitespace-nowrap">
-//                         <span className="inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-600">
-//                           {assessment.status}
-//                         </span>
-//                       </td>
+                      {/* Status */}
+                      <td className="p-4 align-middle whitespace-nowrap">
+                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20">
+                          {assessment.status}
+                        </span>
+                      </td>
 
-//                       {/* Duration */}
-//                       <td className="p-4 align-middle whitespace-nowrap">
-//                         {assessment.duration ? (
-//                           <div className="flex items-center gap-1.5 text-muted-foreground">
-//                             <Clock className="h-3.5 w-3.5" />
+                      {/* Duration */}
+                      <td className="p-4 align-middle whitespace-nowrap">
+                        {assessment.duration ? (
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
+                            <Clock className="h-3.5 w-3.5" />
 
-//                             <span className="text-foreground">
-//                               {assessment.duration} min
-//                             </span>
-//                           </div>
-//                         ) : (
-//                           <span className="text-xs text-muted-foreground">
-//                             —
-//                           </span>
-//                         )}
-//                       </td>
+                            <span className="text-foreground">
+                              {assessment.duration} min
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            —
+                          </span>
+                        )}
+                      </td>
 
-//                       {/* Passing Score */}
-//                       <td className="p-4 align-middle whitespace-nowrap">
-//                         {assessment.passingScore !== undefined ? (
-//                           <div className="flex items-center gap-1.5 text-muted-foreground">
-//                             <Award className="h-3.5 w-3.5" />
+                      {/* Passing Score */}
+                      <td className="p-4 align-middle whitespace-nowrap">
+                        {assessment.passingScore !== undefined ? (
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
+                            <Award className="h-3.5 w-3.5" />
 
-//                             <span className="text-foreground">
-//                               {assessment.passingScore}
-//                             </span>
-//                           </div>
-//                         ) : (
-//                           <span className="text-xs text-muted-foreground">
-//                             —
-//                           </span>
-//                         )}
-//                       </td>
+                            <span className="text-foreground">
+                              {assessment.passingScore}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            —
+                          </span>
+                        )}
+                      </td>
 
-//                       {/* Action */}
-//                       <td className="p-4 align-middle text-right whitespace-nowrap">
-//                         <Link
-//                           href={`/dashboard/company/assessments/${id}/questions`}
-//                           className="inline-flex items-center gap-1.5 rounded-md border bg-background px-3 py-1.5 text-xs font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
-//                         >
-//                           <Eye className="h-3.5 w-3.5" />
-//                           <span>Questions</span>
-//                         </Link>
-//                       </td>
-//                     </tr>
-//                   );
-//                 })}
-//               </tbody>
-//             </table>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
+                      {/* Action */}
+                      <td className="p-4 align-middle text-right whitespace-nowrap">
+                        <Link
+                          href={`/dashboard/company/assessments/${id}/questions`}
+                          className="inline-flex items-center gap-1.5 rounded-md border bg-background px-3 py-1.5 text-xs font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                          <span>Questions</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

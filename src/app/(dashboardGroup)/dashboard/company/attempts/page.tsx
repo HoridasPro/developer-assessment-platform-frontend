@@ -1,5 +1,3 @@
- 
-
 "use client";
 
 import { useGetCompanyAttempts } from "@/hooks";
@@ -7,7 +5,6 @@ import Link from "next/link";
 
 export default function CompanyAttemptsPage() {
   const { data, isLoading, isError } = useGetCompanyAttempts();
-
 
   if (isLoading) {
     return <div className="p-6">Loading attempts...</div>;
@@ -64,11 +61,11 @@ export default function CompanyAttemptsPage() {
                   <td className="px-4 py-4">{attempt.assessment.title}</td>
 
                   <td className="px-4 py-4">
-                    <span className="rounded-md bg-yellow-100 px-2 py-1 text-sm text-yellow-700">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
                       {attempt.status}
                     </span>
                   </td>
-
                   <td className="px-4 py-4">{attempt.score ?? "Pending"}</td>
 
                   <td className="px-4 py-4">

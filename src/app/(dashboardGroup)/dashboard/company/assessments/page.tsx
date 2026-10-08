@@ -1,4 +1,3 @@
- 
 "use client";
 
 import Link from "next/link";
@@ -16,10 +15,8 @@ import { useGetAssessments, useSoftDeleteAssessment } from "@/hooks";
 export default function AssessmentsPage() {
   const { data, isLoading, isError, refetch } = useGetAssessments();
 
-  const {
-    mutate: softDeleteAssessmentMutation,
-    isPending: isDeleting,
-  } = useSoftDeleteAssessment();
+  const { mutate: softDeleteAssessmentMutation, isPending: isDeleting } =
+    useSoftDeleteAssessment();
 
   console.log("get assessment", data);
 
@@ -46,8 +43,7 @@ export default function AssessmentsPage() {
         console.error("Soft delete assessment error:", error);
 
         alert(
-          error?.message ||
-            "Failed to archive assessment. Please try again.",
+          error?.message || "Failed to archive assessment. Please try again.",
         );
       },
     });
@@ -101,9 +97,7 @@ export default function AssessmentsPage() {
             <FileText className="h-6 w-6 text-muted-foreground" />
           </div>
 
-          <h2 className="mt-4 text-lg font-semibold">
-            No assessments found
-          </h2>
+          <h2 className="mt-4 text-lg font-semibold">No assessments found</h2>
 
           <p className="mt-1 max-w-sm text-sm text-muted-foreground">
             Create your first assessment to get started and manage your
@@ -172,7 +166,32 @@ export default function AssessmentsPage() {
                       {/* Status */}
                       <td className="p-4 align-middle whitespace-nowrap">
                         {assessment.status ? (
-                          <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20">
+                          <span
+                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${
+                              String(assessment.status).toUpperCase() ===
+                              "DRAFT"
+                                ? "bg-yellow-50 text-yellow-700 ring-yellow-600/20 dark:bg-yellow-500/10 dark:text-yellow-400 dark:ring-yellow-500/20"
+                                : String(assessment.status).toUpperCase() ===
+                                    "PUBLISHED"
+                                  ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20"
+                                  : String(assessment.status).toUpperCase() ===
+                                      "ARCHIVED"
+                                    ? "bg-gray-50 text-gray-700 ring-gray-600/20 dark:bg-gray-500/10 dark:text-gray-400 dark:ring-gray-500/20"
+                                    : String(
+                                          assessment.status,
+                                        ).toUpperCase() === "COMPLETED"
+                                      ? "bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-500/10 dark:text-blue-400 dark:ring-blue-500/20"
+                                      : String(
+                                            assessment.status,
+                                          ).toUpperCase() === "IN_PROGRESS"
+                                        ? "bg-purple-50 text-purple-700 ring-purple-600/20 dark:bg-purple-500/10 dark:text-purple-400 dark:ring-purple-500/20"
+                                        : String(
+                                              assessment.status,
+                                            ).toUpperCase() === "CANCELLED"
+                                          ? "bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-500/10 dark:text-red-400 dark:ring-red-500/20"
+                                          : "bg-gray-50 text-gray-700 ring-gray-600/20 dark:bg-gray-500/10 dark:text-gray-400 dark:ring-gray-500/20"
+                            }`}
+                          >
                             {assessment.status}
                           </span>
                         ) : (
