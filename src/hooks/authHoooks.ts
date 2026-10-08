@@ -4,6 +4,7 @@ import {
   confirmPayment,
   createAssessmentPayload,
   createQuestion,
+  deleteQuestion,
   evaluateAnswers,
   getAssessmentById,
   getAssessmentQuestions,
@@ -28,6 +29,7 @@ import { Assessment } from "@/types/assessmentPayload";
 import { EvaluateAnswersPayload } from "@/types/evaluateAnsPayload";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Question } from "@/types/question";
 
 export const useLogin = () => {
   return useMutation({
@@ -240,5 +242,11 @@ export const useSubmitEvaluate = () => {
         }[];
       };
     }) => submitEvaluate(attemptId, payload),
+  });
+};
+
+export const useDeleteQuestion = () => {
+  return useMutation({
+    mutationFn: (questionId: string) => deleteQuestion(questionId),
   });
 };

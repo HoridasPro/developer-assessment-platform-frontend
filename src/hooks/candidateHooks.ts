@@ -8,6 +8,7 @@ import {
   startAssessment,
   submitAnswer,
   submitAssessment,
+  updateCandidateProfile,
 } from "@/api";
 import { SubmitAnswerPayload } from "@/types/submitAnswerPayload";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -93,5 +94,11 @@ export const useGetMyAllResults = () => {
   return useQuery({
     queryKey: ["my-results"],
     queryFn: getMyAllResults,
+  });
+};
+
+export const useUpdateCandidateProfile = () => {
+  return useMutation({
+    mutationFn: updateCandidateProfile,
   });
 };

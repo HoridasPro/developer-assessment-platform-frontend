@@ -7,6 +7,7 @@ import {
   ClipboardList,
   FileText,
   LayoutDashboard,
+  ListChecks,
   LogOut,
   Plus,
   Settings,
@@ -108,18 +109,6 @@ export default function CompanySidebar() {
                       <SidebarMenuItem>
                         <SidebarMenuButton
                           render={
-                            <Link href="/dashboard/company/createQuestion" />
-                          }
-                          tooltip="Create Assessment"
-                        >
-                          <Plus className="h-4 w-4" />
-                          <span>Create Question</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-
-                      <SidebarMenuItem>
-                        <SidebarMenuButton
-                          render={
                             <Link href="/dashboard/company/assessments" />
                           }
                           tooltip="Assessments"
@@ -169,6 +158,51 @@ export default function CompanySidebar() {
                         >
                           <Archive className="h-4 w-4" />
                           <span>Attempts</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    </SidebarMenu>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+
+              <Collapsible defaultOpen className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger
+                    render={<SidebarMenuButton tooltip="Assessments" />}
+                  >
+                    <ListChecks className="h-4 w-4" />
+
+                    <span>Questions</span>
+
+                    <span className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180">
+                      ˅
+                    </span>
+                  </CollapsibleTrigger>
+
+                  <CollapsibleContent>
+                    <SidebarMenu className="ml-4 mt-1 border-l pl-3">
+                      {/* Create Assessment */}
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          render={
+                            <Link href="/dashboard/company/createQuestion" />
+                          }
+                          tooltip="Create Question"
+                        >
+                          <Plus className="h-4 w-4" />
+                          <span>Create Question</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          render={
+                            <Link href="/dashboard/company/allQuestions" />
+                          }
+                          tooltip="All Questions"
+                        >
+                          <ListChecks className="h-4 w-4" />
+                          <span>All Questions</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     </SidebarMenu>

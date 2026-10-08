@@ -185,3 +185,9 @@ export const submitEvaluate = (
     body: JSON.stringify(payload),
   });
 };
+
+export const deleteQuestion = (questionId: string) => {
+  return apiClient(`/questions/${questionId}`, {
+    method: "DELETE",
+  });
+};

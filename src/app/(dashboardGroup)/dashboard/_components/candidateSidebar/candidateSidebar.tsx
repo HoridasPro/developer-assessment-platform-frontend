@@ -57,6 +57,15 @@ export default function CandidateSidebar() {
                 <span>All my history</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                render={<Link href="/dashboard/candidate/candidateProfile"></Link>}
+              >
+                <User className="h-5 w-5" />
+                <span>Profile</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
