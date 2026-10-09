@@ -5,3 +5,16 @@ export const getAdminUsers = () => {
     method: "GET",
   });
 };
+
+ 
+export type UserRole = "ADMIN" | "COMPANY" | "CANDIDATE";
+
+export const updateUserRole = (
+  userId: string,
+  role: UserRole,
+) => {
+  return apiClient(`/admin/users/role/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+};
