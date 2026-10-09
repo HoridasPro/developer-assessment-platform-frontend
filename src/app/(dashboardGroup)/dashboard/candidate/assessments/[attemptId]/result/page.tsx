@@ -107,9 +107,7 @@ export default function CandidateAttemptResultPage() {
 
           <button
             type="button"
-            onClick={() =>
-              router.push("/dashboard/candidate/attempts")
-            }
+            onClick={() => router.push("/dashboard/candidate/assessments")}
             className="mt-6 inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -165,11 +163,11 @@ export default function CandidateAttemptResultPage() {
 
           <button
             type="button"
-            onClick={() => router.push("/dashboard/candidate/attempts")}
+            onClick={() => router.push("/dashboard/candidate/allMyResults")}
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground shadow-sm transition-all hover:bg-muted sm:w-fit"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Attempts
+            Back to Assessments
           </button>
         </div>
 
@@ -241,9 +239,7 @@ export default function CandidateAttemptResultPage() {
                 </span>
               </div>
 
-              <p className="mt-1 text-xs text-muted-foreground">
-                total marks
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">total marks</p>
             </div>
           </div>
         </div>
@@ -323,9 +319,7 @@ export default function CandidateAttemptResultPage() {
 
               <div
                 className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-                  passed
-                    ? "bg-green-500/10"
-                    : "bg-red-500/10"
+                  passed ? "bg-green-500/10" : "bg-red-500/10"
                 }`}
               >
                 {passed ? (
@@ -359,27 +353,19 @@ export default function CandidateAttemptResultPage() {
           </div>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <InfoItem
-              label="Assessment"
-              value={assessment?.title ?? "N/A"}
-            />
+            <InfoItem label="Assessment" value={assessment?.title ?? "N/A"} />
 
             <InfoItem
               label="Attempt Number"
               value={result.attemptNumber ?? "N/A"}
             />
 
-            <InfoItem
-              label="Status"
-              value={result.status ?? "N/A"}
-            />
+            <InfoItem label="Status" value={result.status ?? "N/A"} />
 
             <InfoItem
               label="Duration"
               value={
-                assessment?.duration
-                  ? `${assessment.duration} minutes`
-                  : "N/A"
+                assessment?.duration ? `${assessment.duration} minutes` : "N/A"
               }
             />
 
@@ -429,9 +415,7 @@ export default function CandidateAttemptResultPage() {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User className="h-4 w-4" />
 
-                  <span className="text-xs font-medium">
-                    Name
-                  </span>
+                  <span className="text-xs font-medium">Name</span>
                 </div>
 
                 <p className="mt-2 font-semibold text-foreground">
@@ -443,9 +427,7 @@ export default function CandidateAttemptResultPage() {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="h-4 w-4" />
 
-                  <span className="text-xs font-medium">
-                    Email
-                  </span>
+                  <span className="text-xs font-medium">Email</span>
                 </div>
 
                 <p className="mt-2 break-all font-semibold text-foreground">
@@ -484,179 +466,161 @@ export default function CandidateAttemptResultPage() {
             </div>
 
             <div className="mt-5 space-y-4">
-              {result.answers.map(
-                (answer: any, index: number) => {
-                  const question = answer.question;
+              {result.answers.map((answer: any, index: number) => {
+                const question = answer.question;
 
-                  const maxMarks = Number(
-                    question?.marks ?? 0,
-                  );
+                const maxMarks = Number(question?.marks ?? 0);
 
-                  const obtainedMarks = Number(
-                    answer.obtainedMarks ??
-                      answer.marks ??
-                      0,
-                  );
+                const obtainedMarks = Number(
+                  answer.obtainedMarks ?? answer.marks ?? 0,
+                );
 
-                  const questionPassed =
-                    obtainedMarks >= maxMarks &&
-                    maxMarks > 0;
+                const questionPassed =
+                  obtainedMarks >= maxMarks && maxMarks > 0;
 
-                  return (
-                    <div
-                      key={
-                        answer.id ??
-                        answer.questionId ??
-                        index
-                      }
-                      className="overflow-hidden rounded-2xl border border-border bg-background"
-                    >
-                      {/* Question Header */}
-                      <div className="flex flex-col gap-4 border-b border-border bg-muted/20 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-5">
-                        <div className="flex min-w-0 gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-                            {index + 1}
-                          </div>
-
-                          <div className="min-w-0">
-                            <p className="text-xs font-medium text-muted-foreground">
-                              Question {index + 1}
-                            </p>
-
-                            <h3 className="mt-1 font-semibold leading-6 text-foreground">
-                              {question?.title ?? "Question"}
-                            </h3>
-                          </div>
+                return (
+                  <div
+                    key={answer.id ?? answer.questionId ?? index}
+                    className="overflow-hidden rounded-2xl border border-border bg-background"
+                  >
+                    {/* Question Header */}
+                    <div className="flex flex-col gap-4 border-b border-border bg-muted/20 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-5">
+                      <div className="flex min-w-0 gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
+                          {index + 1}
                         </div>
 
-                        <div
-                          className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 ${
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium text-muted-foreground">
+                            Question {index + 1}
+                          </p>
+
+                          <h3 className="mt-1 font-semibold leading-6 text-foreground">
+                            {question?.title ?? "Question"}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div
+                        className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 ${
+                          questionPassed ? "bg-green-500/10" : "bg-muted"
+                        }`}
+                      >
+                        <span
+                          className={`text-lg font-bold ${
                             questionPassed
-                              ? "bg-green-500/10"
-                              : "bg-muted"
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-foreground"
                           }`}
                         >
-                          <span
-                            className={`text-lg font-bold ${
-                              questionPassed
-                                ? "text-green-600 dark:text-green-400"
-                                : "text-foreground"
-                            }`}
-                          >
-                            {obtainedMarks}
-                          </span>
+                          {obtainedMarks}
+                        </span>
 
-                          <span className="text-sm text-muted-foreground">
-                            / {maxMarks}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Question Meta */}
-                      <div className="grid gap-3 border-b border-border p-4 sm:grid-cols-3 sm:p-5">
-                        <div className="rounded-xl bg-muted/30 p-3">
-                          <p className="text-xs text-muted-foreground">
-                            Type
-                          </p>
-
-                          <p className="mt-1 text-sm font-semibold text-foreground">
-                            {question?.type ?? "N/A"}
-                          </p>
-                        </div>
-
-                        <div className="rounded-xl bg-muted/30 p-3">
-                          <p className="text-xs text-muted-foreground">
-                            Maximum Marks
-                          </p>
-
-                          <p className="mt-1 text-sm font-semibold text-foreground">
-                            {maxMarks}
-                          </p>
-                        </div>
-
-                        <div className="rounded-xl bg-muted/30 p-3">
-                          <p className="text-xs text-muted-foreground">
-                            Obtained Marks
-                          </p>
-
-                          <p
-                            className={`mt-1 text-sm font-semibold ${
-                              questionPassed
-                                ? "text-green-600 dark:text-green-400"
-                                : "text-foreground"
-                            }`}
-                          >
-                            {obtainedMarks}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Answer */}
-                      <div className="p-4 sm:p-5">
-                        {/* MCQ */}
-                        {question?.type === "MCQ" && (
-                          <div className="rounded-xl border border-border bg-muted/20 p-4">
-                            <div className="flex items-center gap-2">
-                              <CheckCircle2 className="h-4 w-4 text-primary" />
-
-                              <p className="text-sm font-semibold text-foreground">
-                                Your Answer
-                              </p>
-                            </div>
-
-                            <p className="mt-3 text-sm leading-6 text-foreground">
-                              {answer.selectedOption
-                                ?.text ?? "No answer"}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Written */}
-                        {question?.type === "WRITTEN" && (
-                          <div className="rounded-xl border border-border bg-muted/20 p-4">
-                            <div className="flex items-center gap-2">
-                              <FileText className="h-4 w-4 text-primary" />
-
-                              <p className="text-sm font-semibold text-foreground">
-                                Your Answer
-                              </p>
-                            </div>
-
-                            <div className="mt-3 rounded-lg border border-border bg-background p-4">
-                              <p className="whitespace-pre-wrap text-sm leading-6 text-foreground">
-                                {answer.writtenAnswer ??
-                                  "No answer"}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Coding */}
-                        {question?.type === "CODING" && (
-                          <div className="rounded-xl border border-border bg-muted/20 p-4">
-                            <div className="flex items-center gap-2">
-                              <FileText className="h-4 w-4 text-primary" />
-
-                              <p className="text-sm font-semibold text-foreground">
-                                Your Code
-                              </p>
-                            </div>
-
-                            <div className="mt-3 overflow-hidden rounded-xl border border-border bg-muted/40">
-                              <pre className="max-h-[500px] overflow-auto p-4 text-sm leading-6 text-foreground">
-                                <code>
-                                  {answer.codeAnswer ??
-                                    "No code submitted"}
-                                </code>
-                              </pre>
-                            </div>
-                          </div>
-                        )}
+                        <span className="text-sm text-muted-foreground">
+                          / {maxMarks}
+                        </span>
                       </div>
                     </div>
-                  );
-                },
-              )}
+
+                    {/* Question Meta */}
+                    <div className="grid gap-3 border-b border-border p-4 sm:grid-cols-3 sm:p-5">
+                      <div className="rounded-xl bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">Type</p>
+
+                        <p className="mt-1 text-sm font-semibold text-foreground">
+                          {question?.type ?? "N/A"}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">
+                          Maximum Marks
+                        </p>
+
+                        <p className="mt-1 text-sm font-semibold text-foreground">
+                          {maxMarks}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl bg-muted/30 p-3">
+                        <p className="text-xs text-muted-foreground">
+                          Obtained Marks
+                        </p>
+
+                        <p
+                          className={`mt-1 text-sm font-semibold ${
+                            questionPassed
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-foreground"
+                          }`}
+                        >
+                          {obtainedMarks}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Answer */}
+                    <div className="p-4 sm:p-5">
+                      {/* MCQ */}
+                      {question?.type === "MCQ" && (
+                        <div className="rounded-xl border border-border bg-muted/20 p-4">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className="h-4 w-4 text-primary" />
+
+                            <p className="text-sm font-semibold text-foreground">
+                              Your Answer
+                            </p>
+                          </div>
+
+                          <p className="mt-3 text-sm leading-6 text-foreground">
+                            {answer.selectedOption?.text ?? "No answer"}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Written */}
+                      {question?.type === "WRITTEN" && (
+                        <div className="rounded-xl border border-border bg-muted/20 p-4">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-primary" />
+
+                            <p className="text-sm font-semibold text-foreground">
+                              Your Answer
+                            </p>
+                          </div>
+
+                          <div className="mt-3 rounded-lg border border-border bg-background p-4">
+                            <p className="whitespace-pre-wrap text-sm leading-6 text-foreground">
+                              {answer.writtenAnswer ?? "No answer"}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Coding */}
+                      {question?.type === "CODING" && (
+                        <div className="rounded-xl border border-border bg-muted/20 p-4">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-primary" />
+
+                            <p className="text-sm font-semibold text-foreground">
+                              Your Code
+                            </p>
+                          </div>
+
+                          <div className="mt-3 overflow-hidden rounded-xl border border-border bg-muted/40">
+                            <pre className="max-h-[500px] overflow-auto p-4 text-sm leading-6 text-foreground">
+                              <code>
+                                {answer.codeAnswer ?? "No code submitted"}
+                              </code>
+                            </pre>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -696,9 +660,7 @@ export default function CandidateAttemptResultPage() {
                 : "text-red-600 dark:text-red-400"
             }`}
           >
-            {passed
-              ? "Congratulations!"
-              : "Better Luck Next Time"}
+            {passed ? "Congratulations!" : "Better Luck Next Time"}
           </h2>
 
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground">
@@ -710,13 +672,9 @@ export default function CandidateAttemptResultPage() {
           <div className="mx-auto mt-6 flex w-fit items-center gap-2 rounded-2xl border border-border bg-background px-6 py-4">
             <Target className="h-5 w-5 text-primary" />
 
-            <span className="text-sm text-muted-foreground">
-              Score
-            </span>
+            <span className="text-sm text-muted-foreground">Score</span>
 
-            <strong className="text-xl text-foreground">
-              {score}
-            </strong>
+            <strong className="text-xl text-foreground">{score}</strong>
 
             <span className="text-sm text-muted-foreground">
               / {totalMarks}
@@ -732,18 +690,10 @@ export default function CandidateAttemptResultPage() {
    Reusable Info Item
 ====================================================== */
 
-function InfoItem({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) {
+function InfoItem({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-xl border border-border bg-muted/20 p-4">
-      <p className="text-xs font-medium text-muted-foreground">
-        {label}
-      </p>
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
 
       <p className="mt-2 break-words text-sm font-semibold text-foreground">
         {value}

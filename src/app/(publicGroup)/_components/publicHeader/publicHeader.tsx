@@ -34,6 +34,7 @@ const PublicHeader = () => {
   };
 
   const { data, isLoading } = useGetMe();
+  console.log("get user data",data);
   const { mutate: logout } = useLogout();
 
   const queryClient = useQueryClient();

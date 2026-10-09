@@ -6,6 +6,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { TGetMeResponse } from "@/types/getMeResponse";
 import CandidateSidebar from "./_components/candidateSidebar/candidateSidebar";
 import CompanySidebar from "./_components/companySidebar/companySidebar";
+import AdminSidebar from "./_components/adminSidebar/adminSidebar";
 
 const DashboardGroupLayout = ({ children }: { children: React.ReactNode }) => {
   const { data, isLoading, error } = useGetMe();
@@ -15,6 +16,7 @@ const DashboardGroupLayout = ({ children }: { children: React.ReactNode }) => {
     <SidebarProvider>
       {user?.data?.role === "CANDIDATE" && <CandidateSidebar />}
       {user?.data?.role === "COMPANY" && <CompanySidebar />}
+      {user?.data?.role === "ADMIN" && <AdminSidebar />}
 
       {/* min-w-0 এবং flex-1 দিয়ে পুরো বাকি জায়গা ছড়িয়ে দেওয়া হয়েছে */}
       <div className={cn("min-h-screen flex-1 w-full min-w-0 antialiased")}>

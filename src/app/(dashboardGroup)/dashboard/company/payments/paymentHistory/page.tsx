@@ -1,3 +1,4 @@
+ 
 "use client";
 
 import {
@@ -158,7 +159,7 @@ export default function PaymentHistoryPage() {
     return (
       <div className="flex h-64 items-center justify-center p-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
           <span>Loading payment history...</span>
         </div>
       </div>
@@ -195,7 +196,9 @@ export default function PaymentHistoryPage() {
       ============================== */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Payment History</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Payment History
+          </h1>
 
           <p className="mt-1 text-sm text-muted-foreground">
             View and manage all your assessment payments.
@@ -203,7 +206,7 @@ export default function PaymentHistoryPage() {
         </div>
 
         <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-card shadow-sm sm:h-11 sm:w-11">
-          <CreditCard className="h-5 w-5 text-muted-foreground" />
+          <CreditCard className="h-5 w-5 text-blue-500" />
         </div>
       </div>
 
@@ -215,13 +218,15 @@ export default function PaymentHistoryPage() {
         <div className="rounded-xl border bg-card p-5 text-card-foreground shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Payments</p>
+              <p className="text-sm text-muted-foreground">
+                Total Payments
+              </p>
 
               <p className="mt-1 text-2xl font-bold">{payments.length}</p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
-              <Receipt className="h-5 w-5 text-muted-foreground" />
+              <Receipt className="h-5 w-5 text-violet-500" />
             </div>
           </div>
         </div>
@@ -232,11 +237,13 @@ export default function PaymentHistoryPage() {
             <div>
               <p className="text-sm text-muted-foreground">Successful</p>
 
-              <p className="mt-1 text-2xl font-bold">{successfulPayments}</p>
+              <p className="mt-1 text-2xl font-bold">
+                {successfulPayments}
+              </p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
-              <CreditCard className="h-5 w-5 text-muted-foreground" />
+              <CreditCard className="h-5 w-5 text-emerald-500" />
             </div>
           </div>
         </div>
@@ -247,11 +254,13 @@ export default function PaymentHistoryPage() {
             <div>
               <p className="text-sm text-muted-foreground">Pending</p>
 
-              <p className="mt-1 text-2xl font-bold">{pendingPayments}</p>
+              <p className="mt-1 text-2xl font-bold">
+                {pendingPayments}
+              </p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
-              <CalendarDays className="h-5 w-5 text-muted-foreground" />
+              <CalendarDays className="h-5 w-5 text-amber-500" />
             </div>
           </div>
         </div>
@@ -263,13 +272,15 @@ export default function PaymentHistoryPage() {
       {payments.length === 0 ? (
         <div className="flex min-h-[320px] flex-col items-center justify-center rounded-xl border border-dashed p-8 text-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-            <FileText className="h-6 w-6 text-muted-foreground" />
+            <FileText className="h-6 w-6 text-slate-500" />
           </div>
 
-          <h2 className="mt-4 text-lg font-semibold">No payment history</h2>
+          <h2 className="mt-4 text-lg font-semibold">
+            No payment history
+          </h2>
 
           <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-            You haven't made any payments yet.
+            You haven&apos;t made any payments yet.
           </p>
         </div>
       ) : (
@@ -400,7 +411,10 @@ export default function PaymentHistoryPage() {
                         {/* Amount */}
                         <td className="whitespace-nowrap p-4 align-middle">
                           <span className="font-medium">
-                            {formatAmount(payment.amount, payment.currency)}
+                            {formatAmount(
+                              payment.amount,
+                              payment.currency,
+                            )}
                           </span>
                         </td>
 
@@ -497,7 +511,9 @@ export default function PaymentHistoryPage() {
 
                   {/* Assessment */}
                   <div className="mt-4 border-t pt-4">
-                    <p className="text-xs text-muted-foreground">Assessment</p>
+                    <p className="text-xs text-muted-foreground">
+                      Assessment
+                    </p>
 
                     <p className="mt-1 truncate text-sm font-semibold">
                       {title}
@@ -512,7 +528,9 @@ export default function PaymentHistoryPage() {
 
                   {/* Payment ID */}
                   <div className="mt-3">
-                    <p className="text-xs text-muted-foreground">Payment ID</p>
+                    <p className="text-xs text-muted-foreground">
+                      Payment ID
+                    </p>
 
                     <p className="mt-1 truncate font-mono text-[11px] text-muted-foreground">
                       {id}
@@ -538,16 +556,23 @@ export default function PaymentHistoryPage() {
                   <div className="mt-3 grid grid-cols-2 gap-3">
                     {/* Amount */}
                     <div className="rounded-lg bg-muted/50 p-3">
-                      <p className="text-xs text-muted-foreground">Amount</p>
+                      <p className="text-xs text-muted-foreground">
+                        Amount
+                      </p>
 
                       <p className="mt-1 text-sm font-semibold">
-                        {formatAmount(payment.amount, payment.currency)}
+                        {formatAmount(
+                          payment.amount,
+                          payment.currency,
+                        )}
                       </p>
                     </div>
 
                     {/* Date */}
                     <div className="rounded-lg bg-muted/50 p-3">
-                      <p className="text-xs text-muted-foreground">Date</p>
+                      <p className="text-xs text-muted-foreground">
+                        Date
+                      </p>
 
                       <p className="mt-1 text-sm font-semibold">
                         {formatDate(

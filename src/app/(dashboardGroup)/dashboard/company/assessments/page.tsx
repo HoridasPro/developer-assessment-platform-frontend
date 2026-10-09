@@ -561,7 +561,7 @@ export default function AssessmentsPage() {
                               onClick={() => handleSoftDelete(id)}
                               disabled={isDeleting}
                               title="Archive assessment"
-                              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-red-500/20 text-red-500 transition-colors hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-red-500/20 text-red-500 transition-colors hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
                             >
                               {isDeleting ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />

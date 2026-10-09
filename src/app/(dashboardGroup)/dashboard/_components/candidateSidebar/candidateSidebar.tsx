@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  Package,
-  CreditCard,
-  User,
-  LogOut,
-} from "lucide-react";
+import { LayoutDashboard, CreditCard, User, LogOut } from "lucide-react";
 
 import {
   Sidebar,
@@ -32,11 +26,11 @@ export default function CandidateSidebar() {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton render={<Link href="/dashboard/candidate/"></Link>}>
-      
-                  <LayoutDashboard className="h-5 w-5" />
-                  <span>Dashboard</span>
-           
+              <SidebarMenuButton
+                render={<Link href="/dashboard/candidate/"></Link>}
+              >
+                <LayoutDashboard className="h-5 w-5" />
+                <span>Dashboard</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 
@@ -60,7 +54,9 @@ export default function CandidateSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<Link href="/dashboard/candidate/candidateProfile"></Link>}
+                render={
+                  <Link href="/dashboard/candidate/candidateProfile"></Link>
+                }
               >
                 <User className="h-5 w-5" />
                 <span>Profile</span>
