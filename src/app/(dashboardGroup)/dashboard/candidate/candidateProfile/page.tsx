@@ -361,7 +361,7 @@
 // }
 "use client";
 
-import { useUpdateCandidateProfile, useUpdateCandidateProfiles } from "@/hooks";
+import { useUpdateCandidateProfiles } from "@/hooks";
 import { useState } from "react";
 
 // type UpdateCandidateProfilePayload = {
