@@ -1,6 +1,5 @@
-import React from "react";
-const Home = () => {
-  return <div className="text-foreground">This is home page</div>;
-};
+import Home from "./_components/homeContent/home";
 
-export default Home;
+export default function HomePage() {
+  return <Home />;
+}

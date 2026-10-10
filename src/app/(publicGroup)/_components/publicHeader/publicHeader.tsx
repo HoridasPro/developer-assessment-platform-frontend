@@ -1,7 +1,8 @@
+//  ;
 // "use client";
 
 // import Link from "next/link";
-// import { LogOut, Menu, Moon, Sun } from "lucide-react";
+// import { LogOut, Menu, Moon, Sun, LayoutDashboard } from "lucide-react";
 // import { useTheme } from "next-themes";
 // import { useRouter } from "next/navigation";
 
@@ -24,7 +25,22 @@
 //   DropdownMenuSeparator,
 //   DropdownMenuTrigger,
 // } from "@/components/ui/dropdown-menu";
-// import { getMe } from "@/api";
+
+// const getDashboardPath = (role?: string) => {
+//   switch (role?.toUpperCase()) {
+//     case "CANDIDATE":
+//       return "/dashboard/candidate";
+
+//     case "COMPANY":
+//       return "/dashboard/company";
+
+//     case "ADMIN":
+//       return "/dashboard/admin";
+
+//     default:
+//       return "/dashboard";
+//   }
+// };
 
 // const PublicHeader = () => {
 //   const { theme, setTheme } = useTheme();
@@ -35,7 +51,9 @@
 //   };
 
 //   const { data, isLoading } = useGetMe();
-//   console.log("get user data",data);
+
+//   console.log("get user data", data);
+
 //   const { mutate: logout } = useLogout();
 
 //   const queryClient = useQueryClient();
@@ -71,6 +89,8 @@
 //       },
 //     });
 //   };
+
+//   const dashboardPath = getDashboardPath(data?.data?.role);
 
 //   return (
 //     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/60 backdrop-blur-xl">
@@ -134,6 +154,7 @@
 //                   Login
 //                 </Button>
 //               </Link>
+
 //               <Link href="/register">
 //                 <Button className="hidden sm:inline-flex cursor-pointer">
 //                   Register
@@ -142,6 +163,7 @@
 //             </>
 //           )}
 
+//           {/* Profile Dropdown */}
 //           {!isLoading && data && (
 //             <DropdownMenu>
 //               <DropdownMenuTrigger>
@@ -167,12 +189,27 @@
 //               </DropdownMenuTrigger>
 
 //               <DropdownMenuContent align="end" className="w-48">
-//                 <DropdownMenuItem>
-//                   <Link href="/profile">👤 My Profile</Link>
+//                 <DropdownMenuItem
+//                   onClick={() => router.push("/profile")}
+//                   className="cursor-pointer"
+//                 >
+//                   👤 My Profile
 //                 </DropdownMenuItem>
 
-//                 <DropdownMenuItem>
-//                   <Link href="/settings">⚙️ Settings</Link>
+//                 {/* Dashboard */}
+//                 <DropdownMenuItem
+//                   onClick={() => router.push(dashboardPath)}
+//                   className="cursor-pointer"
+//                 >
+//                   <LayoutDashboard className="mr-2 h-4 w-4" />
+//                   Dashboard
+//                 </DropdownMenuItem>
+
+//                 <DropdownMenuItem
+//                   onClick={() => router.push("/settings")}
+//                   className="cursor-pointer"
+//                 >
+//                   ⚙️ Settings
 //                 </DropdownMenuItem>
 
 //                 <DropdownMenuSeparator />
@@ -207,6 +244,22 @@
 //                 <Link href="/about">About</Link>
 //                 <Link href="/contact">Contact</Link>
 
+//                 {!isLoading && data && (
+//                   <>
+//                     <Link
+//                       href={dashboardPath}
+//                       className="flex items-center gap-2"
+//                     >
+//                       <LayoutDashboard className="h-4 w-4" />
+//                       Dashboard
+//                     </Link>
+
+//                     <Link href="/profile">👤 My Profile</Link>
+
+//                     <Link href="/settings">⚙️ Settings</Link>
+//                   </>
+//                 )}
+
 //                 <div className="mt-4 flex flex-col gap-2">
 //                   {!isLoading && !data ? (
 //                     <>
@@ -215,18 +268,22 @@
 //                           Login
 //                         </Button>
 //                       </Link>
+
 //                       <Link href="/register">
 //                         <Button className="w-full">Register</Button>
 //                       </Link>
 //                     </>
 //                   ) : (
-//                     <Button
-//                       onClick={handleLogout}
-//                       variant="destructive"
-//                       className="w-full"
-//                     >
-//                       Logout
-//                     </Button>
+//                     !isLoading &&
+//                     data && (
+//                       <Button
+//                         onClick={handleLogout}
+//                         variant="destructive"
+//                         className="w-full"
+//                       >
+//                         Logout
+//                       </Button>
+//                     )
 //                   )}
 //                 </div>
 //               </nav>
@@ -278,7 +335,7 @@ const getDashboardPath = (role?: string) => {
       return "/dashboard/admin";
 
     default:
-      return "/dashboard";
+      return "/";
   }
 };
 
@@ -297,6 +354,12 @@ const PublicHeader = () => {
   const { mutate: logout } = useLogout();
 
   const queryClient = useQueryClient();
+
+  // Logged-in user information
+  const currentUser = data?.data;
+  const isLoggedIn = !isLoading && !!currentUser;
+
+  const dashboardPath = getDashboardPath(currentUser?.role);
 
   const handleLogout = () => {
     logout(undefined, {
@@ -330,8 +393,6 @@ const PublicHeader = () => {
     });
   };
 
-  const dashboardPath = getDashboardPath(data?.data?.role);
-
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/60 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -349,21 +410,21 @@ const PublicHeader = () => {
           </Link>
 
           <Link
-            href="/assessments"
+            href="publishedAssessmentCards"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
             Assessments
           </Link>
 
           <Link
-            href="/about"
+            href="/aboutPage"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
             About
           </Link>
 
           <Link
-            href="/contact"
+            href="/contactPage"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
             Contact
@@ -384,7 +445,8 @@ const PublicHeader = () => {
             )}
           </Button>
 
-          {!isLoading && !data && (
+          {/* Login and Register: only when logged out */}
+          {!isLoading && !isLoggedIn && (
             <>
               <Link href="/login">
                 <Button
@@ -403,46 +465,50 @@ const PublicHeader = () => {
             </>
           )}
 
-          {/* Profile Dropdown */}
-          {!isLoading && data && (
+          {/* Profile Dropdown: only when logged in */}
+          {isLoggedIn && (
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button
                   type="button"
-                  title={data?.data?.name}
+                  title={currentUser?.name}
                   className="flex items-center justify-center rounded-full border p-1 cursor-pointer"
                 >
-                  {data?.data?.profilePhoto ? (
+                  {currentUser?.profilePhoto ? (
                     <Image
-                      src={data.data.profilePhoto}
-                      alt={data.data.name}
+                      src={currentUser.profilePhoto}
+                      alt={currentUser.name || "User profile"}
                       width={50}
                       height={50}
                       className="h-8 w-8 rounded-full object-cover"
                     />
                   ) : (
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                      {data?.data?.name?.charAt(0)?.toUpperCase()}
+                      {currentUser?.name?.charAt(0)?.toUpperCase() || "U"}
                     </div>
                   )}
                 </Button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem
-                  onClick={() => router.push("/profile")}
-                  className="cursor-pointer"
-                >
-                  👤 My Profile
-                </DropdownMenuItem>
+                {/* My Profile: logged-in user's own profile */}
 
-                {/* Dashboard */}
+                {/* Dashboard: based on user's role */}
                 <DropdownMenuItem
                   onClick={() => router.push(dashboardPath)}
                   className="cursor-pointer"
                 >
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  <LayoutDashboard className=" h-4 w-4" />
                   Dashboard
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() =>
+                    router.push("/dashboard/company/updateProfile")
+                  }
+                  className="cursor-pointer"
+                >
+                  👤 My Profile
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
@@ -480,11 +546,12 @@ const PublicHeader = () => {
 
               <nav className="mt-8 flex flex-col gap-4">
                 <Link href="/">Home</Link>
-                <Link href="/assessments">Assessments</Link>
-                <Link href="/about">About</Link>
-                <Link href="/contact">Contact</Link>
+                <Link href="publishedAssessmentCards">Assessments</Link>
+                <Link href="/aboutPage">About</Link>
+                <Link href="/contactPage">Contact</Link>
 
-                {!isLoading && data && (
+                {/* Logged-in user's menu */}
+                {isLoggedIn && (
                   <>
                     <Link
                       href={dashboardPath}
@@ -493,12 +560,17 @@ const PublicHeader = () => {
                       <LayoutDashboard className="h-4 w-4" />
                       Dashboard
                     </Link>
+
+                    <Link href="/dashboard/company/updateProfile">
+                      👤 My Profile
+                    </Link>
+
                     <Link href="/settings">⚙️ Settings</Link>
                   </>
                 )}
 
                 <div className="mt-4 flex flex-col gap-2">
-                  {!isLoading && !data ? (
+                  {!isLoading && !isLoggedIn ? (
                     <>
                       <Link href="/login">
                         <Button variant="outline" className="w-full">
@@ -511,8 +583,7 @@ const PublicHeader = () => {
                       </Link>
                     </>
                   ) : (
-                    !isLoading &&
-                    data && (
+                    isLoggedIn && (
                       <Button
                         onClick={handleLogout}
                         variant="destructive"
