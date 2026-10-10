@@ -54,9 +54,7 @@ export default function CandidateSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={
-                  <Link href="/dashboard/candidate/candidateProfile"></Link>
-                }
+                render={<Link href="/dashboard/candidate/updateProfile"></Link>}
               >
                 <User className="h-5 w-5" />
                 <span>Profile</span>

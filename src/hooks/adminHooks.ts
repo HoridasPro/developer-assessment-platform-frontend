@@ -1,4 +1,12 @@
-import { getAdminUsers, updateUserRole, UserRole } from "@/api";
+import {
+  activateAdminUser,
+  getAdminAuditLogs,
+  getAdminDashboardStats,
+  getAdminUsers,
+  suspendAdminUser,
+  updateUserRole,
+  UserRole,
+} from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetAdminUsers = () => {
@@ -22,6 +30,41 @@ export const useUpdateUserRole = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
+        queryKey: ["admin-users"],
+      });
+    },
+  });
+};
+
+export const useGetAdminDashboardStats = () => {
+  return useQuery({
+    queryKey: ["admin-dashboard-stats"],
+    queryFn: getAdminDashboardStats,
+  });
+};
+
+export const useGetAdminAuditLogs = () => {
+  return useQuery({
+    queryKey: ["admin-audit-logs"],
+    queryFn: getAdminAuditLogs,
+  });
+};
+
+export const useSuspendAdminUser = () => {
+  return useMutation({
+    mutationKey: ["suspend-admin-user"],
+    mutationFn: (userId: string) => suspendAdminUser(userId),
+  });
+};
+
+export const useActivateAdminUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => activateAdminUser(userId),
+
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
         queryKey: ["admin-users"],
       });
     },
