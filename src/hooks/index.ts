@@ -1,4 +1,4 @@
 export * from "./authHoooks";
-export * from "./candidateHooks";
 export * from "./adminHooks";
-export * from "./updateProfileHooks";
+export * from "./candidateHooks";
+ 

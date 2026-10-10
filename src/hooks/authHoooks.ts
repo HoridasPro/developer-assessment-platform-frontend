@@ -23,6 +23,7 @@ import {
   publishAssessment,
   softDeleteAssessment,
   submitEvaluate,
+  updateMyProfile,
   updateQuestion,
   userGoogleAuthLogin,
   userLogin,
@@ -34,7 +35,7 @@ import {
 import { Assessment } from "@/types/assessmentPayload";
 import { EvaluateAnswersPayload } from "@/types/evaluateAnsPayload";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useLogin = () => {
   return useMutation({
@@ -289,20 +290,40 @@ export const useGetPaymentHistory = () => {
   });
 };
 
- 
- 
-export const useGetAssessmentReport = (
-  assessmentId: string,
-) => {
+export const useGetAssessmentReport = (assessmentId: string) => {
   return useQuery({
-    queryKey: [
-      "assessment-report",
-      assessmentId,
-    ],
+    queryKey: ["assessment-report", assessmentId],
 
-    queryFn: () =>
-      getAssessmentReport(assessmentId),
+    queryFn: () => getAssessmentReport(assessmentId),
 
     enabled: Boolean(assessmentId),
+  });
+};
+
+export const useUpdateCandidateProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (formData: FormData) => updateMyProfile(formData),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["my-profile"],
+      });
+    },
+  });
+};
+
+export const useUpdateCompanyProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (formData: FormData) => updateMyProfile(formData),
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["my-profile"],
+      });
+    },
   });
 };

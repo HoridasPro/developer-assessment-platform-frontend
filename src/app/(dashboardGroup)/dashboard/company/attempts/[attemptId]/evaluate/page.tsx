@@ -1,4 +1,3 @@
- 
 /** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 "use client";
 
@@ -16,7 +15,6 @@ export default function EvaluateAttemptPage() {
 
   const attemptId = params.attemptId as string;
 
- 
   const {
     data: attemptResponse,
     isLoading,
@@ -24,16 +22,12 @@ export default function EvaluateAttemptPage() {
     refetch,
   } = useGetAttemptDetails(attemptId);
 
- 
   const evaluateMutation = useEvaluateAnswers();
 
- 
   const submitEvaluateMutation = useSubmitEvaluate();
 
- 
   const [marks, setMarks] = useState<Record<string, string>>({});
 
- 
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center p-4 sm:p-6">
@@ -50,7 +44,6 @@ export default function EvaluateAttemptPage() {
     );
   }
 
- 
   if (isError) {
     return (
       <div className="flex min-h-[400px] items-center justify-center p-4 sm:p-6">
@@ -67,7 +60,6 @@ export default function EvaluateAttemptPage() {
     );
   }
 
-  
   const attempt = attemptResponse?.data || attemptResponse?.data;
 
   if (!attempt) {
@@ -83,7 +75,6 @@ export default function EvaluateAttemptPage() {
     );
   }
 
-  
   const handleMarksChange = (questionId: string, value: string) => {
     setMarks((prev) => ({
       ...prev,
@@ -91,9 +82,7 @@ export default function EvaluateAttemptPage() {
     }));
   };
 
- 
   const handleSubmitEvaluation = () => {
-   
     const answersPayload = attempt.answers
       .filter(
         (answer: any) =>
@@ -108,8 +97,6 @@ export default function EvaluateAttemptPage() {
         type: answer.question.type as "WRITTEN" | "CODING",
       }));
 
-   
-    
     const invalidMarks = answersPayload.find((answer: any) => {
       const question = attempt.answers.find(
         (item: any) => item.questionId === answer.questionId,
@@ -127,7 +114,6 @@ export default function EvaluateAttemptPage() {
 
       return;
     }
- 
 
     evaluateMutation.mutate(
       {
@@ -140,7 +126,6 @@ export default function EvaluateAttemptPage() {
 
       {
         onSuccess: (evaluationResponse) => {
-          
           submitEvaluateMutation.mutate(
             {
               attemptId,
@@ -151,46 +136,22 @@ export default function EvaluateAttemptPage() {
             },
 
             {
-              onSuccess: async (submitResponse) => {
-                console.log("========== FINAL EVALUATION SUCCESS ==========");
-
-                console.log("Submit Response:", submitResponse);
-
-                console.log("Submit Data:", submitResponse?.data);
-
-                console.log("Final Status:", submitResponse?.data?.status);
-
-                console.log("===============================================");
-
-                // -----------------------------------------
-                // Refetch Attempt
-                // -----------------------------------------
+              onSuccess: async () => {
                 const refreshed = await refetch();
-
-                console.log("========== AFTER REFETCH ==========");
 
                 console.log("Refetched Data:", refreshed.data);
 
                 console.log("Refetched Status:", refreshed.data?.data?.status);
 
-                console.log("===================================");
-
                 alert("Evaluation submitted successfully!");
 
-                // -----------------------------------------
-                // Go Back
-                // -----------------------------------------
                 router.push("/dashboard/company/attempts");
 
                 router.refresh();
               },
 
               onError: (error) => {
-                console.error("========== FINAL EVALUATION ERROR ==========");
-
                 console.error(error);
-
-                console.error("=============================================");
 
                 alert(
                   error instanceof Error
@@ -203,11 +164,7 @@ export default function EvaluateAttemptPage() {
         },
 
         onError: (error) => {
-          console.error("========== PATCH EVALUATION ERROR ==========");
-
           console.error(error);
-
-          console.error("=============================================");
 
           alert(error instanceof Error ? error.message : "Evaluation failed.");
         },

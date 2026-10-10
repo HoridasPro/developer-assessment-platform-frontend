@@ -97,7 +97,7 @@ export const useGetMyAllResults = () => {
   });
 };
 
-export const useUpdateCandidateProfile = () => {
+export const useUpdateCandidateProfiles = () => {
   return useMutation({
     mutationFn: updateCandidateProfile,
   });
