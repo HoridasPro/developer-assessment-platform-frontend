@@ -14,7 +14,7 @@ export default function DraftAssessmentsPage() {
       ? (data as any).data
       : [];
 
-  // শুধু DRAFT assessments
+ 
   const draftAssessments = assessments.filter(
     (assessment: any) =>
       String(assessment.status).toUpperCase() === "DRAFT" &&

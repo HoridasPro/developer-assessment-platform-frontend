@@ -17,18 +17,6 @@ export default function AssessmentPieChart({
   cancelledCount,
   expiredCount,
 }: AssessmentPieChartProps) {
-  /*
-   * Use actual category counts for pie chart.
-   *
-   * Example:
-   *
-   * Total = 4
-   * Completed = 4
-   *
-   * Result:
-   * Completed = 100%
-   * Everything else = 0%
-   */
 
   const total =
     inProgressCount +

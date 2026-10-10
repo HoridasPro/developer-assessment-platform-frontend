@@ -80,7 +80,7 @@ function getNumber(
 }
 
 function getPercentage(item: Assessment): number | null {
-  // 1. সরাসরি percentage পাওয়া গেলে সেটি ব্যবহার করো।
+  
   const percentage = getNumber(
     item.percentage,
     item.result?.percentage,
@@ -91,7 +91,7 @@ function getPercentage(item: Assessment): number | null {
     return percentage;
   }
 
-  // 2. প্রাপ্ত নম্বর বের করো।
+ 
   const obtainedMarks = getNumber(
     item.obtainedMarks,
     item.result?.obtainedMarks,
@@ -100,8 +100,7 @@ function getPercentage(item: Assessment): number | null {
     item.attempt?.score,
     item.score,
   );
-
-  // 3. মোট নম্বর বের করো।
+ 
   const totalMarks = getNumber(
     item.totalMarks,
     item.result?.totalMarks,
@@ -109,7 +108,7 @@ function getPercentage(item: Assessment): number | null {
     item.assessment?.totalMarks,
   );
 
-  // 4. প্রাপ্ত নম্বর ও মোট নম্বর থাকলে percentage হিসাব করো।
+
   if (
     obtainedMarks !== null &&
     totalMarks !== null &&
@@ -119,8 +118,7 @@ function getPercentage(item: Assessment): number | null {
     return Math.min(100, (obtainedMarks / totalMarks) * 100);
   }
 
-  // 5. score যদি নিজেই percentage হয়, তখন সেটি ব্যবহার করো।
-  // এই নিয়ম কেবল score 0–100 percentage হলে সঠিক।
+ 
   const score = getNumber(item.score);
 
   if (score !== null && score >= 0 && score <= 100) {

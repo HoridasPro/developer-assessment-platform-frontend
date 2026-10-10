@@ -77,15 +77,7 @@ export default function CandidateAttemptResultPage() {
     );
   }
 
-  /*
-   * API response normally:
-   *
-   * {
-   *   success: true,
-   *   message: "...",
-   *   data: {...}
-   * }
-   */
+   
 
   const result = resultResponse?.data?.data || resultResponse?.data;
 
