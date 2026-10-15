@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { ArrowLeft, Check, CircleHelp, Code2, FileText } from "lucide-react";
 import { useAddQuestionsToAssessment, useGetQuestions } from "@/hooks";
+import { toast } from "@/components/ui/toast";
 
 export default function AddAssessmentQuestionsPage() {
   const params = useParams();
@@ -15,7 +16,6 @@ export default function AddAssessmentQuestionsPage() {
 
   const { data, isLoading } = useGetQuestions();
 
-  // Safe Array Extraction
   const questionsList = Array.isArray(data)
     ? data
     : Array.isArray((data as any)?.data)
@@ -74,7 +74,12 @@ export default function AddAssessmentQuestionsPage() {
       },
       {
         onSuccess: () => {
-          alert("Questions added successfully!");
+          toast.add({
+            title: "Questions added successfully!",
+            description:
+              "The questions have been added to the assessment successfully.",
+            type: "success",
+          });
 
           router.push(
             `/dashboard/company/assessments/${assessmentId}/questions`,
@@ -82,16 +87,16 @@ export default function AddAssessmentQuestionsPage() {
         },
 
         onError: (error) => {
-          console.error(error);
-          alert("Failed to add questions.");
+          toast.add({
+            title: "Failed to add questions.",
+            description:
+              error.message || "Something went wrong. Please try again.",
+            type: "error",
+          });
         },
       },
     );
   };
-
-  // ==================================================
-  // TYPE ICON
-  // ==================================================
 
   const getTypeIcon = (type: string) => {
     const normalizedType = String(type).toUpperCase();
@@ -111,10 +116,6 @@ export default function AddAssessmentQuestionsPage() {
     return null;
   };
 
-  // ==================================================
-  // LOADING
-  // ==================================================
-
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center p-6">
@@ -123,19 +124,9 @@ export default function AddAssessmentQuestionsPage() {
     );
   }
 
-  // ==================================================
-  // MAIN UI
-  // ==================================================
-
   return (
     <div className="space-y-6 p-4 sm:p-6">
-      {/* ==================================================
-          HEADER
-      ================================================== */}
-
       <div className="flex flex-col gap-5">
-        {/* BACK */}
-
         <button
           type="button"
           onClick={() =>
@@ -179,15 +170,7 @@ export default function AddAssessmentQuestionsPage() {
         </div>
       </div>
 
-      {/* ==================================================
-          QUESTION LIST
-      ================================================== */}
-
       <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-        {/* ==================================================
-            EMPTY STATE
-        ================================================== */}
-
         {questionsList.length === 0 ? (
           <div className="p-10 text-center sm:p-14">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
@@ -204,10 +187,6 @@ export default function AddAssessmentQuestionsPage() {
           </div>
         ) : (
           <>
-            {/* ==================================================
-                DESKTOP / TABLET TABLE
-            ================================================== */}
-
             <div className="hidden md:block">
               {/* TABLE HEADER */}
 
@@ -234,36 +213,20 @@ export default function AddAssessmentQuestionsPage() {
                   />
                 </div>
 
-                {/* SI NO */}
-
                 <div className="text-center">SI NO</div>
-
-                {/* QUESTION */}
 
                 <div>Question</div>
 
-                {/* DESCRIPTION */}
-
                 <div>Description</div>
-
-                {/* TYPE */}
 
                 <div>Type</div>
 
-                {/* CATEGORY */}
-
                 <div>Category</div>
-
-                {/* DIFFICULTY */}
 
                 <div>Difficulty</div>
 
-                {/* MARKS */}
-
                 <div className="text-right">Marks</div>
               </div>
-
-              {/* TABLE ROWS */}
 
               <div className="divide-y divide-border">
                 {questionsList.map((question: any, index: number) => {
@@ -278,8 +241,6 @@ export default function AddAssessmentQuestionsPage() {
                         isSelected ? "bg-primary/5" : "hover:bg-muted/30"
                       }`}
                     >
-                      {/* CHECKBOX */}
-
                       <div className="flex justify-center">
                         <input
                           type="checkbox"
@@ -289,13 +250,9 @@ export default function AddAssessmentQuestionsPage() {
                         />
                       </div>
 
-                      {/* SI NO */}
-
                       <div className="text-center text-sm font-medium text-muted-foreground">
                         {index + 1}
                       </div>
-
-                      {/* QUESTION */}
 
                       <div className="min-w-0">
                         <h3 className="line-clamp-2 text-sm font-semibold text-foreground">
@@ -305,8 +262,6 @@ export default function AddAssessmentQuestionsPage() {
                             "Untitled Question"}
                         </h3>
                       </div>
-
-                      {/* DESCRIPTION */}
 
                       <div className="min-w-0">
                         {question.description ? (
@@ -320,8 +275,6 @@ export default function AddAssessmentQuestionsPage() {
                         )}
                       </div>
 
-                      {/* TYPE */}
-
                       <div>
                         {question.type && (
                           <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted px-2.5 py-1.5 text-xs font-medium text-foreground">
@@ -331,8 +284,6 @@ export default function AddAssessmentQuestionsPage() {
                           </span>
                         )}
                       </div>
-
-                      {/* CATEGORY */}
 
                       <div className="min-w-0">
                         {question.category ? (
@@ -345,8 +296,6 @@ export default function AddAssessmentQuestionsPage() {
                           </span>
                         )}
                       </div>
-
-                      {/* DIFFICULTY */}
 
                       <div>
                         {question.difficulty && (
@@ -366,8 +315,6 @@ export default function AddAssessmentQuestionsPage() {
                         )}
                       </div>
 
-                      {/* MARKS */}
-
                       <div className="text-right">
                         <span className="text-sm font-semibold text-foreground">
                           {question.marks ?? 0}
@@ -378,10 +325,6 @@ export default function AddAssessmentQuestionsPage() {
                 })}
               </div>
             </div>
-
-            {/* ==================================================
-                MOBILE CARD VIEW
-            ================================================== */}
 
             <div className="divide-y divide-border md:hidden">
               {questionsList.map((question: any, index: number) => {
@@ -445,15 +388,11 @@ export default function AddAssessmentQuestionsPage() {
                         </span>
                       )}
 
-                      {/* CATEGORY */}
-
                       {question.category && (
                         <span className="rounded-lg bg-muted px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
                           {question.category}
                         </span>
                       )}
-
-                      {/* DIFFICULTY */}
 
                       {question.difficulty && (
                         <span
@@ -470,16 +409,12 @@ export default function AddAssessmentQuestionsPage() {
                         </span>
                       )}
 
-                      {/* MARKS */}
-
                       <span className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary">
                         {question.marks ?? 0}
 
                         <span className="font-normal">marks</span>
                       </span>
                     </div>
-
-                    {/* SELECTED INDICATOR */}
 
                     {isSelected && (
                       <div className="mt-3 flex items-center gap-1.5 pl-7 text-xs font-medium text-primary">

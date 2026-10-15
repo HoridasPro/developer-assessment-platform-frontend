@@ -1,9 +1,9 @@
- 
 "use client";
 
 import { useGetCompanyAttempts } from "@/hooks";
 import Link from "next/link";
-import { ClipboardCheck, Loader2 } from "lucide-react";
+import { ClipboardCheck, Loader2, UserRound } from "lucide-react";
+import Image from "next/image";
 
 export default function CompanyAttemptsPage() {
   const { data, isLoading, isError } = useGetCompanyAttempts();
@@ -30,6 +30,7 @@ export default function CompanyAttemptsPage() {
   }
 
   const attempts = data?.data ?? [];
+  console.log("get attempts", attempts);
 
   return (
     <div className="w-full space-y-6 p-4 sm:p-6 lg:p-8">
@@ -60,25 +61,40 @@ export default function CompanyAttemptsPage() {
           {/* Desktop / Tablet Table */}
           <div className="hidden overflow-hidden rounded-xl border bg-card shadow-sm md:block">
             <div className="w-full overflow-x-auto">
-              <table className="w-full min-w-[700px]">
+              <table className="w-full min-w-[800px]">
                 <thead>
                   <tr className="border-b bg-muted/50">
+                    {/* SI No. */}
                     <th className="px-4 py-3 text-left text-sm font-semibold">
-                      Candidate
+                      SI
                     </th>
 
+                    {/* Image */}
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Image
+                    </th>
+
+                    {/* Candidate Name */}
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Candidate Name
+                    </th>
+
+                    {/* Assessment */}
                     <th className="px-4 py-3 text-left text-sm font-semibold">
                       Assessment
                     </th>
 
+                    {/* Status */}
                     <th className="px-4 py-3 text-left text-sm font-semibold">
                       Status
                     </th>
 
+                    {/* Score */}
                     <th className="px-4 py-3 text-left text-sm font-semibold">
                       Score
                     </th>
 
+                    {/* Action */}
                     <th className="px-4 py-3 text-left text-sm font-semibold">
                       Action
                     </th>
@@ -86,12 +102,34 @@ export default function CompanyAttemptsPage() {
                 </thead>
 
                 <tbody>
-                  {attempts.map((attempt) => (
+                  {attempts.map((attempt, index) => (
                     <tr
                       key={attempt.id}
                       className="border-b transition-colors last:border-0 hover:bg-muted/30"
                     >
-                      {/* Candidate */}
+                      {/* SI No. */}
+                      <td className="px-4 py-4">
+                        <span className="font-medium">{index + 1}</span>
+                      </td>
+
+                      {/* Candidate Image */}
+                      <td className="px-4 py-4">
+                        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border bg-muted">
+                          {attempt.candidate.profilePhoto ? (
+                            <Image
+                              src={attempt.candidate.profilePhoto}
+                              alt={attempt.candidate.name || "Candidate"}
+                              width={40}
+                              height={40}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <UserRound className="h-5 w-5 text-muted-foreground" />
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Candidate Name */}
                       <td className="px-4 py-4">
                         <p className="font-medium">{attempt.candidate.name}</p>
 
@@ -146,20 +184,43 @@ export default function CompanyAttemptsPage() {
 
           {/* Mobile Cards */}
           <div className="grid gap-4 md:hidden">
-            {attempts.map((attempt) => (
+            {attempts.map((attempt, index) => (
               <div
                 key={attempt.id}
                 className="rounded-xl border bg-card p-4 shadow-sm"
               >
-                {/* Candidate */}
-                <div className="mb-4">
-                  <p className="text-base font-semibold">
-                    {attempt.candidate.name}
-                  </p>
+                {/* SI No. */}
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-md bg-muted px-2 text-sm font-semibold">
+                    {index + 1}
+                  </span>
+                </div>
 
-                  <p className="mt-1 break-all text-sm text-muted-foreground">
-                    {attempt.candidate.email}
-                  </p>
+                {/* Candidate Profile Image + Details */}
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted">
+                    {attempt.candidate.profilePhoto ? (
+                      <Image
+                        src={attempt.candidate.profilePhoto}
+                        alt={attempt.candidate.name || "Candidate"}
+                        width={48}
+                        height={48}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <UserRound className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="text-base font-semibold">
+                      {attempt.candidate.name}
+                    </p>
+
+                    <p className="mt-1 break-all text-sm text-muted-foreground">
+                      {attempt.candidate.email}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Assessment */}
@@ -203,7 +264,7 @@ export default function CompanyAttemptsPage() {
                   className="inline-flex items-center gap-1.5 rounded-md border bg-background px-3 py-1.5 text-xs font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
                   <ClipboardCheck className="h-4 w-4" />
-                  Evaluatedfdsf
+                  Evaluate
                 </Link>
               </div>
             ))}

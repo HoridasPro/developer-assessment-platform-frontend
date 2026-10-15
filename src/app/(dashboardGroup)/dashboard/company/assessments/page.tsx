@@ -1,4 +1,5 @@
- 
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
+
 "use client";
 
 import Link from "next/link";
@@ -18,6 +19,7 @@ import {
   useGetAssessmentsWithPagination,
   useSoftDeleteAssessment,
 } from "@/hooks";
+import { toast } from "@/components/ui/toast";
 
 export default function AssessmentsPage() {
   const [page, setPage] = useState(1);
@@ -33,9 +35,6 @@ export default function AssessmentsPage() {
 
   console.log("get assessment", data);
 
-  // Backend response:
-  // data.data = assessments
-  // data.pagination = pagination info
   const assessmentsList = Array.isArray(data)
     ? data
     : Array.isArray((data as any)?.data)
@@ -61,8 +60,6 @@ export default function AssessmentsPage() {
       onSuccess: () => {
         alert("Assessment archived successfully.");
 
-        // Current page-এ যদি শেষ item delete হয়,
-        // তাহলে আগের page-এ চলে যাবে
         if (assessmentsList.length === 1 && page > 1) {
           setPage((prev) => prev - 1);
         } else {
@@ -70,21 +67,23 @@ export default function AssessmentsPage() {
         }
       },
       onError: (error: any) => {
-        console.error("Soft delete assessment error:", error);
-
-        alert(
-          error?.message || "Failed to archive assessment. Please try again.",
-        );
+        toast.add({
+          title: "Failed to archive assessment. Please try again.",
+          description: error?.message || "An unexpected error occurred.",
+          type: "error",
+        });
       },
     });
   };
 
   if (isLoading) {
     return (
-      <div className="flex h-64 items-center justify-center p-6">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span>Loading assessments...</span>
+      <div className="flex min-h-[320px] w-full items-center justify-center">
+        <div className="flex items-center justify-center gap-3">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
+          <span className="text-sm font-medium text-muted-foreground">
+            Loading Assessments...
+          </span>
         </div>
       </div>
     );
@@ -113,7 +112,7 @@ export default function AssessmentsPage() {
         </div>
 
         <Link
-          href="/dashboard/company/addAssessment"
+          href="/dashboard/company/createAssessment"
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <Plus className="h-4 w-4" />
@@ -136,7 +135,7 @@ export default function AssessmentsPage() {
           </p>
 
           <Link
-            href="/dashboard/company/addAssessment"
+            href="/dashboard/company/createAssessment"
             className="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" />
@@ -151,8 +150,19 @@ export default function AssessmentsPage() {
               <table className="w-full caption-bottom text-sm">
                 <thead className="border-b bg-muted/50 text-xs uppercase text-muted-foreground">
                   <tr>
+                    {/* SI No. */}
+                    <th className="h-11 whitespace-nowrap px-4 text-left align-middle font-medium">
+                      SI No.
+                    </th>
+
+                    {/* Title */}
+                    <th className="h-11 whitespace-nowrap px-4 text-left align-middle font-medium">
+                      Title
+                    </th>
+
+                    {/* Description */}
                     <th className="h-11 px-4 text-left align-middle font-medium">
-                      Title & Description
+                      Description
                     </th>
 
                     <th className="h-11 whitespace-nowrap px-4 text-left align-middle font-medium">
@@ -174,7 +184,7 @@ export default function AssessmentsPage() {
                 </thead>
 
                 <tbody className="divide-y">
-                  {assessmentsList.map((assessment: any) => {
+                  {assessmentsList.map((assessment: any, index: number) => {
                     const id = assessment.id || assessment._id;
 
                     return (
@@ -182,16 +192,28 @@ export default function AssessmentsPage() {
                         key={id}
                         className="transition-colors hover:bg-muted/40 data-[state=selected]:bg-muted"
                       >
-                        {/* Title & Description */}
-                        <td className="min-w-[220px] p-4 align-middle">
+                        {/* SI No. */}
+                        <td className="whitespace-nowrap p-4 align-middle">
+                          {(currentPage - 1) * limit + index + 1}
+                        </td>
+
+                        {/* Title */}
+                        <td className="min-w-[180px] p-4 align-middle">
                           <div className="font-semibold text-foreground">
                             {assessment.title}
                           </div>
+                        </td>
 
-                          {assessment.description && (
-                            <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                        {/* Description */}
+                        <td className="min-w-[220px] p-4 align-middle">
+                          {assessment.description ? (
+                            <p className="line-clamp-2 text-xs text-muted-foreground">
                               {assessment.description}
                             </p>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">
+                              —
+                            </span>
                           )}
                         </td>
 
@@ -286,7 +308,7 @@ export default function AssessmentsPage() {
                               onClick={() => handleSoftDelete(id)}
                               disabled={isDeleting}
                               title="Archive assessment"
-                              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-red-500/20 text-red-500 transition-colors hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                              className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-red-500/20 text-red-500 transition-colors hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                               {isDeleting ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />

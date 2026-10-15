@@ -450,7 +450,7 @@ export default function InvitationAssessmentPage() {
                             /* SUBMITTED → Evaluation Pending */
                             <span className="inline-flex items-center gap-1.5 rounded-lg bg-yellow-500/10 px-4 py-2.5 text-sm font-semibold text-yellow-700 dark:text-yellow-400">
                               <Hourglass className="h-4 w-4" />
-                              Evaluation Pending
+                              Pending
                             </span>
                           ) : invitation.attemptStatus === "COMPLETED" ? (
                             /* COMPLETED → View Result */
@@ -779,7 +779,7 @@ export default function InvitationAssessmentPage() {
                     ) : invitation.attemptStatus === "SUBMITTED" ? (
                       <div className="flex w-full items-center justify-center gap-2 rounded-xl bg-yellow-500/10 px-4 py-3 text-sm font-semibold text-yellow-700 dark:text-yellow-400">
                         <Hourglass className="h-4 w-4" />
-                        Evaluation Pending
+                        Pending
                       </div>
                     ) : invitation.attemptStatus === "COMPLETED" ? (
                       <Link

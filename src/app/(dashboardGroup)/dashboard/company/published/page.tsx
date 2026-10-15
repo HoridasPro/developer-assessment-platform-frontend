@@ -14,7 +14,6 @@ export default function PublishedAssessmentsPage() {
       ? (data as any).data
       : [];
 
-  // শুধু PUBLISHED assessments
   const publishedAssessments = assessments.filter(
     (assessment: any) =>
       String(assessment.status).toUpperCase() === "PUBLISHED" &&
@@ -84,8 +83,19 @@ export default function PublishedAssessmentsPage() {
             <table className="w-full caption-bottom text-sm">
               <thead className="border-b bg-muted/50 text-xs uppercase text-muted-foreground">
                 <tr>
+                  {/* SI No. */}
+                  <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
+                    SI No.
+                  </th>
+
+                  {/* Title */}
+                  <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
+                    Title
+                  </th>
+
+                  {/* Description */}
                   <th className="h-11 px-4 text-left align-middle font-medium">
-                    Title & Description
+                    Description
                   </th>
 
                   <th className="h-11 px-4 text-left align-middle font-medium whitespace-nowrap">
@@ -107,7 +117,7 @@ export default function PublishedAssessmentsPage() {
               </thead>
 
               <tbody className="divide-y">
-                {publishedAssessments.map((assessment: any) => {
+                {publishedAssessments.map((assessment: any, index: number) => {
                   const id = assessment.id || assessment._id;
 
                   return (
@@ -115,16 +125,28 @@ export default function PublishedAssessmentsPage() {
                       key={id}
                       className="transition-colors hover:bg-muted/40"
                     >
+                      {/* SI No. */}
+                      <td className="p-4 align-middle whitespace-nowrap">
+                        {index + 1}
+                      </td>
+
                       {/* Title */}
-                      <td className="min-w-[220px] p-4 align-middle">
+                      <td className="min-w-[180px] p-4 align-middle">
                         <div className="font-semibold text-foreground">
                           {assessment.title}
                         </div>
+                      </td>
 
-                        {assessment.description && (
-                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                      {/* Description */}
+                      <td className="min-w-[220px] p-4 align-middle">
+                        {assessment.description ? (
+                          <p className="line-clamp-2 text-xs text-muted-foreground">
                             {assessment.description}
                           </p>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            —
+                          </span>
                         )}
                       </td>
 

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
@@ -13,6 +14,7 @@ import {
 import { useState } from "react";
 import { useAssignCandidate, useGetCandidates } from "@/hooks";
 import Image from "next/image";
+import { toast } from "@/components/ui/toast";
 
 export default function AssignCandidatePage() {
   const params = useParams();
@@ -20,7 +22,6 @@ export default function AssignCandidatePage() {
 
   const assessmentId = params.assessmentId as string;
 
-  // Multiple selection state (Array of Candidate User IDs)
   const [selectedCandidateIds, setSelectedCandidateIds] = useState<string[]>(
     [],
   );
@@ -30,7 +31,6 @@ export default function AssignCandidatePage() {
 
   const { mutateAsync: assignCandidateAsync } = useAssignCandidate();
 
-  // Safe candidate extraction
   const candidates = Array.isArray(data)
     ? data
     : Array.isArray((data as any)?.data)
@@ -48,19 +48,38 @@ export default function AssignCandidatePage() {
     );
   };
 
-  // Toggle Select All
+  // Select or deselect all candidates
   const toggleSelectAll = () => {
-    if (selectedCandidateIds.length === candidates.length) {
-      setSelectedCandidateIds([]);
+    const allIds = candidates
+      .map((candidate: any) =>
+        String(candidate.userId || candidate.id || candidate._id || ""),
+      )
+      .filter(Boolean);
+
+    const isAllSelected =
+      allIds.length > 0 &&
+      allIds.every((id: string) => selectedCandidateIds.includes(id));
+
+    if (isAllSelected) {
+      setSelectedCandidateIds((prev) =>
+        prev.filter((id) => !allIds.includes(id)),
+      );
     } else {
-      const allIds = candidates.map((c: any) => c.userId || c.id || c._id);
-      setSelectedCandidateIds(allIds);
+      setSelectedCandidateIds((prev) =>
+        Array.from(new Set([...prev, ...allIds])),
+      );
     }
   };
 
+  // Assign selected candidates
   const handleAssign = async () => {
     if (selectedCandidateIds.length === 0) {
-      alert("Please select at least one candidate.");
+      toast.add({
+        title: "Please select at least one candidate.",
+        description: "Select one or more candidates before assigning.",
+        type: "error",
+      });
+
       return;
     }
 
@@ -76,27 +95,31 @@ export default function AssignCandidatePage() {
         ),
       );
 
-      alert("Candidates assigned successfully!");
+      toast.add({
+        title: "Candidates assigned successfully!",
+        description: "All selected candidates have been assigned successfully.",
+        type: "success",
+      });
+
       router.push(`/dashboard/company/assessments/${assessmentId}`);
     } catch (error: any) {
-      // 🔍 ব্যাকএন্ড থেকে আসা আসল এরর মেসেজ কনসোলে দেখতে
-      console.error(
-        "Assign Candidate Detailed Error:",
-        error?.data || error?.response?.data || error,
-      );
-
       const errorMessage =
         error?.data?.message ||
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to assign candidates.";
+        "Failed to assign candidates. Please try again.";
 
-      alert(`Error: ${errorMessage}`);
+      toast.add({
+        title: "Failed to Assign Candidates",
+        description: errorMessage,
+        type: "error",
+      });
     } finally {
       setIsAssigning(false);
     }
   };
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] w-full items-center justify-center p-10">
@@ -108,6 +131,7 @@ export default function AssignCandidatePage() {
     );
   }
 
+  // Error state
   if (isError) {
     return (
       <div className="w-full p-6">
@@ -116,8 +140,15 @@ export default function AssignCandidatePage() {
     );
   }
 
+  const candidateIds = candidates
+    .map((candidate: any) =>
+      String(candidate.userId || candidate.id || candidate._id || ""),
+    )
+    .filter(Boolean);
+
   const isAllSelected =
-    candidates.length > 0 && selectedCandidateIds.length === candidates.length;
+    candidateIds.length > 0 &&
+    candidateIds.every((id: string) => selectedCandidateIds.includes(id));
 
   return (
     <div className="w-full space-y-6 p-4 sm:p-6 lg:p-8">
@@ -127,30 +158,12 @@ export default function AssignCandidatePage() {
           <h1 className="text-2xl font-bold tracking-tight">
             Assign Candidates
           </h1>
+
           <p className="mt-1 text-sm text-muted-foreground">
             Select one or multiple candidates from the table below and assign
             them to this assessment.
           </p>
         </div>
-
-        {/* Desktop Top Assign Button */}
-        {/* {candidates.length > 0 && (
-          <button
-            type="button"
-            onClick={handleAssign}
-            disabled={selectedCandidateIds.length === 0 || isAssigning}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isAssigning ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <UserPlus className="h-4 w-4" />
-            )}
-            {isAssigning
-              ? "Assigning..."
-              : `Assign Selected (${selectedCandidateIds.length})`}
-          </button>
-        )} */}
       </div>
 
       {/* Candidate Table Container */}
@@ -162,9 +175,10 @@ export default function AssignCandidatePage() {
               Total Candidates: {candidates.length}
             </p>
           </div>
+
           {selectedCandidateIds.length > 0 && (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700">
-              <CheckCircle2 className="h-3.5 w-3.5" />{" "}
+              <CheckCircle2 className="h-3.5 w-3.5" />
               {selectedCandidateIds.length} Selected
             </span>
           )}
@@ -175,6 +189,7 @@ export default function AssignCandidatePage() {
             <p className="font-medium text-muted-foreground">
               No candidates found.
             </p>
+
             <p className="mt-1 text-sm text-muted-foreground/80">
               There are no candidates available right now.
             </p>
@@ -189,25 +204,35 @@ export default function AssignCandidatePage() {
                       type="checkbox"
                       checked={isAllSelected}
                       onChange={toggleSelectAll}
-                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                      aria-label="Select all candidates"
+                      className="h-4 w-4 cursor-pointer rounded border-gray-300 text-primary focus:ring-primary"
                     />
                   </th>
+
                   <th className="w-12 px-3 py-3.5 text-center">SI</th>
+
                   <th className="px-4 py-3.5">Candidate</th>
+
                   <th className="hidden px-4 py-3.5 sm:table-cell">Email</th>
+
                   <th className="hidden px-4 py-3.5 md:table-cell">Role</th>
+
                   <th className="hidden px-4 py-3.5 lg:table-cell">
                     Candidate User ID
                   </th>
+
                   <th className="px-4 py-3.5 text-center">Status</th>
+
                   <th className="px-4 py-3.5 text-right">Selection</th>
                 </tr>
               </thead>
+
               <tbody className="divide-y">
                 {candidates.map((candidate: any, index: number) => {
-                  // User ID required by backend's prisma.user.findUnique
-                  const candidateUserId =
-                    candidate.userId || candidate.id || candidate._id;
+                  // User ID required by the backend
+                  const candidateUserId = String(
+                    candidate.userId || candidate.id || candidate._id || "",
+                  );
 
                   const name =
                     candidate.name ||
@@ -232,12 +257,17 @@ export default function AssignCandidatePage() {
                     candidate.status || candidate.user?.status || "Active";
 
                   const isSelected =
+                    candidateUserId !== "" &&
                     selectedCandidateIds.includes(candidateUserId);
 
                   return (
                     <tr
-                      key={candidateUserId}
-                      onClick={() => toggleSelectCandidate(candidateUserId)}
+                      key={candidateUserId || index}
+                      onClick={() => {
+                        if (candidateUserId) {
+                          toggleSelectCandidate(candidateUserId);
+                        }
+                      }}
                       className={`cursor-pointer transition-colors hover:bg-muted/40 ${
                         isSelected ? "bg-primary/5 font-medium" : ""
                       }`}
@@ -247,11 +277,15 @@ export default function AssignCandidatePage() {
                         <input
                           type="checkbox"
                           checked={isSelected}
-                          onChange={() =>
-                            toggleSelectCandidate(candidateUserId)
-                          }
-                          onClick={(e) => e.stopPropagation()}
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                          disabled={!candidateUserId}
+                          onChange={() => {
+                            if (candidateUserId) {
+                              toggleSelectCandidate(candidateUserId);
+                            }
+                          }}
+                          onClick={(event) => event.stopPropagation()}
+                          aria-label={`Select ${name}`}
+                          className="h-4 w-4 cursor-pointer rounded border-gray-300 text-primary focus:ring-primary"
                         />
                       </td>
 
@@ -267,6 +301,8 @@ export default function AssignCandidatePage() {
                             <Image
                               src={image}
                               alt={name}
+                              width={36}
+                              height={36}
                               className="h-9 w-9 rounded-full border object-cover"
                             />
                           ) : (
@@ -278,10 +314,12 @@ export default function AssignCandidatePage() {
                               )}
                             </div>
                           )}
+
                           <div>
                             <div className="font-medium text-foreground">
                               {name}
                             </div>
+
                             <div className="flex items-center gap-2 md:hidden">
                               <span className="text-[10px] uppercase text-muted-foreground">
                                 {role}
@@ -293,10 +331,13 @@ export default function AssignCandidatePage() {
                         {/* Mobile view */}
                         <div className="mt-1 space-y-0.5 text-xs text-muted-foreground sm:hidden">
                           <p className="flex items-center gap-1">
-                            <Mail className="h-3 w-3" /> {email}
+                            <Mail className="h-3 w-3" />
+                            {email}
                           </p>
+
                           <p className="flex items-center gap-1 text-[10px]">
-                            <Key className="h-3 w-3" /> {candidateUserId}
+                            <Key className="h-3 w-3" />
+                            {candidateUserId || "No User ID"}
                           </p>
                         </div>
                       </td>
@@ -315,16 +356,16 @@ export default function AssignCandidatePage() {
 
                       {/* Candidate User ID */}
                       <td className="hidden px-4 py-4 font-mono text-xs text-muted-foreground lg:table-cell">
-                        {candidateUserId}
+                        {candidateUserId || "—"}
                       </td>
 
                       {/* Status */}
                       <td className="px-4 py-4 text-center">
                         <span
                           className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize ${
-                            status.toLowerCase() === "active"
+                            String(status).toLowerCase() === "active"
                               ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                              : status.toLowerCase() === "pending"
+                              : String(status).toLowerCase() === "pending"
                                 ? "border-amber-200 bg-amber-50 text-amber-700"
                                 : "border-gray-200 bg-gray-100 text-gray-600"
                           }`}
@@ -337,7 +378,8 @@ export default function AssignCandidatePage() {
                       <td className="px-4 py-4 text-right">
                         {isSelected ? (
                           <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                            <UserCheck className="h-3.5 w-3.5" /> Selected
+                            <UserCheck className="h-3.5 w-3.5" />
+                            Selected
                           </span>
                         ) : (
                           <span className="text-xs text-muted-foreground hover:text-foreground">
@@ -368,6 +410,7 @@ export default function AssignCandidatePage() {
             ) : (
               <UserPlus className="h-4 w-4" />
             )}
+
             {isAssigning
               ? "Assigning Candidates..."
               : `Assign Candidates (${selectedCandidateIds.length})`}
