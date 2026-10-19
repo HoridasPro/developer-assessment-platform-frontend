@@ -6,6 +6,7 @@ import {
   Archive,
   BarChart3,
   ClipboardList,
+  Code2,
   CreditCard,
   FileText,
   LayoutDashboard,
@@ -67,11 +68,13 @@ export default function CompanySidebar() {
     <Sidebar variant="sidebar" collapsible="offcanvas">
       {/* HEADER */}
       <SidebarHeader className="border-b bg-background px-4 py-5 sm:px-5">
-        <Link
-          href="/"
-          className="block text-xl font-bold tracking-tight text-blue-600 transition-colors hover:text-blue-700 sm:text-2xl"
-        >
-          DevAssessment
+        <Link href="/" className="group flex items-center gap-1">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-600/25 transition-transform group-hover:rotate-6">
+            <Code2 size={23} />
+          </span>
+          <span className="text-base font-extrabold tracking-tight sm:text-lg">
+            Dev<span className="text-violet-600">Assess</span>
+          </span>
         </Link>
 
         <div className="mt-1 flex items-center gap-2">
@@ -177,9 +180,7 @@ export default function CompanySidebar() {
 
                       <SidebarMenuItem>
                         <SidebarMenuButton
-                          render={
-                            <Link href="/dashboard/company/published" />
-                          }
+                          render={<Link href="/dashboard/company/published" />}
                           isActive={isActive("/dashboard/company/published")}
                           tooltip="Published"
                           className="h-9 rounded-md px-3 hover:bg-green-50 dark:hover:bg-green-500/10"
@@ -207,9 +208,7 @@ export default function CompanySidebar() {
 
                       <SidebarMenuItem>
                         <SidebarMenuButton
-                          render={
-                            <Link href="/dashboard/company/attempts" />
-                          }
+                          render={<Link href="/dashboard/company/attempts" />}
                           isActive={isActive("/dashboard/company/attempts")}
                           tooltip="Attempts"
                           className="h-9 rounded-md px-3 hover:bg-cyan-50 dark:hover:bg-cyan-500/10"
@@ -271,9 +270,7 @@ export default function CompanySidebar() {
                           render={
                             <Link href="/dashboard/company/allQuestions" />
                           }
-                          isActive={isActive(
-                            "/dashboard/company/allQuestions",
-                          )}
+                          isActive={isActive("/dashboard/company/allQuestions")}
                           tooltip="All Questions"
                           className="h-9 rounded-md px-3 hover:bg-violet-50 dark:hover:bg-violet-500/10"
                         >
@@ -332,9 +329,7 @@ export default function CompanySidebar() {
               {/* PROFILE */}
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  render={
-                    <Link href="/dashboard/company/updateProfile" />
-                  }
+                  render={<Link href="/dashboard/company/updateProfile" />}
                   isActive={isActive("/dashboard/company/updateProfile")}
                   tooltip="Profile"
                   className="h-10 rounded-lg px-3 hover:bg-teal-50 dark:hover:bg-teal-500/10"

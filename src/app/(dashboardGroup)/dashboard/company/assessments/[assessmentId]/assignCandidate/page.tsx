@@ -101,7 +101,7 @@ export default function AssignCandidatePage() {
         type: "success",
       });
 
-      router.push(`/dashboard/company/assessments/${assessmentId}`);
+      router.push(`/dashboard/company/assessments`);
     } catch (error: any) {
       const errorMessage =
         error?.data?.message ||

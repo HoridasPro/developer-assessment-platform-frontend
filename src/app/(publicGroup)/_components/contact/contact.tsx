@@ -310,9 +310,7 @@ export default function Contact() {
                 <option value="General Inquiry">General Inquiry</option>
                 <option value="Technical Support">Technical Support</option>
                 <option value="Assessment Issue">Assessment Issue</option>
-                <option value="Company Partnership">
-                  Company Partnership
-                </option>
+                <option value="Company Partnership">Company Partnership</option>
                 <option value="Feedback">Feedback</option>
                 <option value="Other">Other</option>
               </select>
@@ -410,7 +408,7 @@ export default function Contact() {
           </div>
 
           <a
-            href="/assessments"
+            href="/publishedAssessmentCards"
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 px-5 py-3 font-semibold transition hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 sm:w-auto"
           >
             Browse Assessments

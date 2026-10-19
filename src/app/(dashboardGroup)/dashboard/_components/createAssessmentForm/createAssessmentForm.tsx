@@ -328,15 +328,15 @@ const CreateAssessmentForm = () => {
           Cancel
         </Button>
 
-        <Button
+        <button
           type="submit"
           disabled={isPending}
-          className="h-11 w-full cursor-pointer rounded-xl px-6 sm:w-auto"
+          className="h-11 w-full cursor-pointer rounded-xl px-6 sm:w-auto bg-violet-600 dark:bg-violet-600"
         >
           <Save className="mr-2 size-4" />
 
           {isPending ? "Creating..." : "Create Assessment"}
-        </Button>
+        </button>
       </div>
     </form>
   );

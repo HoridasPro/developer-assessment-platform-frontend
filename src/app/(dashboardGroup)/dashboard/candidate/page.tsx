@@ -1,5 +1,3 @@
- 
-
 "use client";
 
 import Link from "next/link";
@@ -80,7 +78,6 @@ function getNumber(
 }
 
 function getPercentage(item: Assessment): number | null {
-  
   const percentage = getNumber(
     item.percentage,
     item.result?.percentage,
@@ -91,7 +88,6 @@ function getPercentage(item: Assessment): number | null {
     return percentage;
   }
 
- 
   const obtainedMarks = getNumber(
     item.obtainedMarks,
     item.result?.obtainedMarks,
@@ -100,14 +96,13 @@ function getPercentage(item: Assessment): number | null {
     item.attempt?.score,
     item.score,
   );
- 
+
   const totalMarks = getNumber(
     item.totalMarks,
     item.result?.totalMarks,
     item.attempt?.totalMarks,
     item.assessment?.totalMarks,
   );
-
 
   if (
     obtainedMarks !== null &&
@@ -118,7 +113,6 @@ function getPercentage(item: Assessment): number | null {
     return Math.min(100, (obtainedMarks / totalMarks) * 100);
   }
 
- 
   const score = getNumber(item.score);
 
   if (score !== null && score >= 0 && score <= 100) {
@@ -154,9 +148,7 @@ export default function CandidateDashboard() {
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <p className="text-sm text-muted-foreground">
-          Loading dashboard...
-        </p>
+        <p className="text-sm text-muted-foreground">Loading dashboard...</p>
       </div>
     );
   }
@@ -257,7 +249,7 @@ export default function CandidateDashboard() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-5">
       {/* Header */}
       <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6 lg:flex-row lg:items-center lg:justify-between">
         <div>
@@ -276,7 +268,7 @@ export default function CandidateDashboard() {
 
         <Link
           href="/dashboard/candidate/assessments"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 dark:bg-violet-600 px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
         >
           My Assessments
           <ArrowRight className="h-4 w-4" />

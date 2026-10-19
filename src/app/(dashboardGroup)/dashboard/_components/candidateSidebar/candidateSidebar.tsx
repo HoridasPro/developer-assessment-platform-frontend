@@ -8,6 +8,7 @@ import {
   UserRound,
   LogOut,
   ClipboardList,
+  Code2,
 } from "lucide-react";
 
 import {
@@ -68,12 +69,13 @@ export default function CandidateSidebar() {
     <Sidebar variant="sidebar" collapsible="offcanvas">
       {/* Header */}
       <SidebarHeader className="border-b border-border bg-background px-4 py-5">
-        <Link
-          href="/"
-          className="flex items-center text-xl font-bold tracking-tight"
-        >
-          <span className="text-primary">Dev</span>
-          <span className="text-foreground">Assessment</span>
+        <Link href="/" className="group flex items-center gap-1">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-600/25 transition-transform group-hover:rotate-6">
+            <Code2 size={23} />
+          </span>
+          <span className="text-base font-extrabold tracking-tight sm:text-lg">
+            Dev<span className="text-violet-600">Assess</span>
+          </span>
         </Link>
 
         <div className="mt-1 flex items-center gap-2">

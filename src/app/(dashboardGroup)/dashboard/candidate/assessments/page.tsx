@@ -669,7 +669,7 @@ export default function InvitationAssessmentPage() {
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
                         invitation.attemptStatus === "IN_PROGRESS"
-                          ? "bg-blue-500/10 text-blue-700 dark:text-blue-400"
+                          ? "bg-violet-500/10 text-violet-700 dark:text-violet-400"
                           : invitation.attemptStatus === "COMPLETED"
                             ? "bg-green-500/10 text-green-700 dark:text-green-400"
                             : invitation.attemptStatus === "CANCELLED"
@@ -715,7 +715,7 @@ export default function InvitationAssessmentPage() {
                           })
                         }
                         disabled={isAccepting}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 dark:bg-violet-600 px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {isAccepting ? (
                           <>
@@ -724,7 +724,7 @@ export default function InvitationAssessmentPage() {
                           </>
                         ) : (
                           <>
-                            Accept Invitation
+                            Accept
                             <ChevronRight className="h-4 w-4" />
                           </>
                         )}
@@ -733,7 +733,7 @@ export default function InvitationAssessmentPage() {
                       <div className="grid grid-cols-2 gap-2">
                         <Link
                           href={`/dashboard/candidate/assessments/${invitation.attemptId}`}
-                          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-primary px-3 py-3 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
+                          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-violet-600 dark:bg-violet-600 px-3 py-3 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
                         >
                           Continue
                           <ChevronRight className="h-4 w-4" />
@@ -784,7 +784,7 @@ export default function InvitationAssessmentPage() {
                     ) : invitation.attemptStatus === "COMPLETED" ? (
                       <Link
                         href={`/dashboard/candidate/assessments/${invitation.attemptId}/result`}
-                        className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        className="inline-flex items-center gap-2 rounded-xl bg-violet-600 dark:bg-violet-600 px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                       >
                         Result
                         <span aria-hidden="true">→</span>
@@ -794,7 +794,7 @@ export default function InvitationAssessmentPage() {
                         type="button"
                         onClick={() => startAssessment(invitation.id)}
                         disabled={isStarting}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 dark:bg-violet-600 px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {isStarting ? (
                           <>

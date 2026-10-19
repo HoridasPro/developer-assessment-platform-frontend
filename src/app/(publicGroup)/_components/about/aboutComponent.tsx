@@ -76,7 +76,7 @@ export default function About() {
 
             <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
               <Link
-                href="/assessments"
+                href="/publishedAssessmentCards"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-6 py-3.5 font-semibold text-white transition hover:bg-violet-700"
               >
                 Explore Assessments
@@ -84,7 +84,7 @@ export default function About() {
               </Link>
 
               <Link
-                href="/contact"
+                href="/contactPage"
                 className="inline-flex items-center justify-center rounded-xl border border-gray-300 px-6 py-3.5 font-semibold transition hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-900"
               >
                 Contact Us

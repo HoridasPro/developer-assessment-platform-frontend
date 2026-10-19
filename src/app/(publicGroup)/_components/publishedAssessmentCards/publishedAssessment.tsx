@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   BookOpen,
   CheckCircle2,
@@ -23,6 +24,7 @@ type Assessment = {
   assessmentId?: string;
   title?: string;
   description?: string | null;
+  imageUrl?: string | null;
   duration?: number | null;
   passingScore?: number | null;
   maxAttempts?: number | null;
@@ -37,7 +39,6 @@ type Assessment = {
   startsAt?: string | Date | null;
   endsAt?: string | Date | null;
 
-  // নেস্টেড প্রপার্টি হ্যান্ডেল করার জন্য অতিরিক্ত ফিল্ড
   settings?: {
     maxAttempts?: number | null;
     duration?: number | null;
@@ -196,18 +197,27 @@ function formatDate(date?: string | Date | null): string {
 
 function AssessmentSkeleton() {
   return (
-    <div className="animate-pulse rounded-2xl border border-border bg-card p-6 shadow-sm">
-      <div className="mb-5 h-11 w-11 rounded-xl bg-muted" />
-      <div className="mb-3 h-6 w-3/4 rounded bg-muted" />
-      <div className="mb-2 h-4 w-full rounded bg-muted" />
-      <div className="mb-6 h-4 w-2/3 rounded bg-muted" />
+    <div className="animate-pulse overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+      <div className="h-36 w-full bg-muted" />
 
-      <div className="mb-5 grid grid-cols-2 gap-3">
-        <div className="h-16 rounded-xl bg-muted" />
-        <div className="h-16 rounded-xl bg-muted" />
+      <div className="p-4">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="h-9 w-9 rounded-lg bg-muted" />
+          <div className="h-5 w-20 rounded-full bg-muted" />
+        </div>
+
+        <div className="mb-4 h-5 w-3/4 rounded bg-muted" />
+
+        <div className="mb-4 grid grid-cols-2 gap-2">
+          <div className="h-14 rounded-lg bg-muted" />
+          <div className="h-14 rounded-lg bg-muted" />
+          <div className="h-14 rounded-lg bg-muted" />
+          <div className="h-14 rounded-lg bg-muted" />
+        </div>
+
+        <div className="mb-4 h-10 rounded-lg bg-muted" />
+        <div className="h-10 rounded-lg bg-muted" />
       </div>
-
-      <div className="h-11 rounded-xl bg-muted" />
     </div>
   );
 }
@@ -244,10 +254,7 @@ export default function PublishedAssessments() {
         return true;
       }
 
-      return (
-        assessment.title?.toLowerCase().includes(query) ||
-        assessment.description?.toLowerCase().includes(query)
-      );
+      return assessment.title?.toLowerCase().includes(query);
     });
   }, [assessments, searchTerm]);
 
@@ -293,32 +300,32 @@ export default function PublishedAssessments() {
   };
 
   return (
-    <main className="min-h-screen text-foreground">
+    <main className="min-h-screen bg-background text-foreground">
       <section
         id="published-assessments"
-        className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
+        className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8"
       >
         {/* Header and search */}
-        <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="mb-2.5 inline-flex items-center gap-1.5 text-xs font-bold tracking-wider text-primary uppercase">
-              <FileText size={15} />
+            <div className="mb-2 inline-flex items-center gap-1.5 text-xs font-bold tracking-wider text-violet-600 uppercase dark:text-violet-400">
+              <FileText size={14} />
               ASSESSMENT LIBRARY
             </div>
 
-            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
               Published Assessments
             </h2>
 
-            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-              Explore challenges designed to improve your skills.
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Explore challenges and test your skills.
             </p>
           </div>
 
-          <div className="relative w-full md:w-80 lg:w-96">
+          <div className="relative w-full md:w-72 lg:w-80">
             <Search
-              size={17}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              size={16}
+              className="absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground"
             />
 
             <input
@@ -326,14 +333,14 @@ export default function PublishedAssessments() {
               value={searchTerm}
               onChange={(event) => handleSearchChange(event.target.value)}
               placeholder="Search assessments..."
-              className="w-full rounded-xl border border-border bg-card py-2.5 pr-4 pl-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              className="w-full rounded-xl border border-border bg-card py-2.5 pr-4 pl-10 text-sm outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
             />
           </div>
         </div>
 
         {/* Loading */}
         {isLoading && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {SKELETON_KEYS.map((key) => (
               <AssessmentSkeleton key={key} />
             ))}
@@ -343,13 +350,16 @@ export default function PublishedAssessments() {
         {/* Error */}
         {!isLoading && isError && (
           <div className="rounded-2xl border border-destructive/30 bg-card p-8 text-center">
-            <h3 className="text-xl font-bold">Failed to load assessments</h3>
+            <h3 className="text-lg font-bold">Failed to load assessments</h3>
 
             <p className="mt-2 text-sm text-muted-foreground">
               Please try loading the assessments again.
             </p>
 
-            <Button onClick={() => refetch()} className="mt-5 rounded-xl">
+            <Button
+              onClick={() => refetch()}
+              className="mt-4 rounded-xl bg-violet-600 text-white hover:bg-violet-700"
+            >
               Try Again
             </Button>
           </div>
@@ -358,7 +368,7 @@ export default function PublishedAssessments() {
         {/* Assessment cards */}
         {!isLoading && !isError && filteredAssessments.length > 0 && (
           <>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {filteredAssessments.map((assessment) => {
                 const assessmentId = getAssessmentId(assessment);
 
@@ -375,34 +385,52 @@ export default function PublishedAssessments() {
                 return (
                   <article
                     key={assessmentId}
-                    className="group flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl"
+                    className="group flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-400/70 hover:shadow-lg hover:shadow-violet-500/5"
                   >
-                    <div>
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                          <BookOpen size={22} />
+                    {/* Image */}
+                    <div className="relative h-36 w-full shrink-0 overflow-hidden bg-violet-100 dark:bg-violet-950/40">
+                      {assessment.imageUrl ? (
+                        <Image
+                          src={assessment.imageUrl}
+                          alt={`${assessment.title || "Assessment"} cover image`}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-violet-100 via-violet-50 to-purple-100 dark:from-violet-950/70 dark:via-violet-900/30 dark:to-purple-950/70">
+                          <BookOpen size={38} className="text-violet-500/70" />
+                        </div>
+                      )}
+
+                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/30 to-transparent" />
+
+                      <span className="absolute right-3 bottom-3 inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/95 px-2.5 py-1 text-xs font-semibold text-violet-700 shadow-sm">
+                        <CheckCircle2 size={12} />
+                        {assessment.status || "Published"}
+                      </span>
+                    </div>
+
+                    {/* Card content */}
+                    <div className="flex flex-1 flex-col p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300">
+                          <BookOpen size={19} />
                         </div>
 
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600">
-                          <CheckCircle2 size={13} />
-                          {assessment.status || "Published"}
-                        </span>
+                        <h3 className="line-clamp-2 pt-1 text-base leading-6 font-bold transition-colors group-hover:text-violet-600 dark:group-hover:text-violet-400">
+                          {assessment.title || "Untitled Assessment"}
+                        </h3>
                       </div>
 
-                      <h3 className="mt-5 line-clamp-2 text-lg font-bold group-hover:text-primary">
-                        {assessment.title || "Untitled Assessment"}
-                      </h3>
-
-                      <p className="mt-2 line-clamp-2 min-h-10 text-sm leading-relaxed text-muted-foreground">
-                        {assessment.description ||
-                          "Test your skills with this assessment."}
-                      </p>
-
                       {/* Assessment information */}
-                      <div className="mt-5 grid grid-cols-2 gap-2.5">
-                        <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
+                      <div className="mt-4 grid grid-cols-2 gap-2">
+                        <div className="rounded-xl border border-border/70 bg-muted/30 p-2.5">
                           <div className="flex items-center gap-1.5 text-muted-foreground">
-                            <Clock3 size={14} />
+                            <Clock3
+                              size={13}
+                              className="shrink-0 text-violet-600 dark:text-violet-400"
+                            />
                             <span className="text-xs">Duration</span>
                           </div>
 
@@ -413,9 +441,12 @@ export default function PublishedAssessments() {
                           </p>
                         </div>
 
-                        <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
+                        <div className="rounded-xl border border-border/70 bg-muted/30 p-2.5">
                           <div className="flex items-center gap-1.5 text-muted-foreground">
-                            <Target size={14} />
+                            <Target
+                              size={13}
+                              className="shrink-0 text-violet-600 dark:text-violet-400"
+                            />
                             <span className="text-xs">Passing</span>
                           </div>
 
@@ -424,74 +455,72 @@ export default function PublishedAssessments() {
                           </p>
                         </div>
 
-                        <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
-                          <span className="text-xs text-muted-foreground">
+                        <div className="rounded-xl border border-border/70 bg-muted/30 p-2.5">
+                          <p className="text-xs text-muted-foreground">
                             Max Attempts
-                          </span>
+                          </p>
 
-                          <p className="mt-1 text-sm font-bold">
+                          <p className="mt-1 truncate text-sm font-bold">
                             {maxAttempts}
                           </p>
                         </div>
 
-                        <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
-                          <span className="text-xs text-muted-foreground">
-                            Price
-                          </span>
+                        <div className="rounded-xl border border-violet-200/70 bg-violet-50/70 p-2.5 dark:border-violet-500/20 dark:bg-violet-500/10">
+                          <p className="text-xs text-muted-foreground">Price</p>
 
-                          <p className="mt-1 text-sm font-bold text-primary">
+                          <p className="mt-1 text-sm font-bold text-violet-700 dark:text-violet-300">
                             {formatPrice(assessment)}
                           </p>
                         </div>
                       </div>
 
                       {/* Start and end dates */}
-                      <div className="mt-4 space-y-3 border-t border-border/60 pt-4">
-                        <div className="flex items-start gap-2.5">
+                      <div className="mt-3 grid grid-cols-2 gap-3 border-t border-border/60 pt-3">
+                        <div className="flex min-w-0 items-start gap-2">
                           <CalendarDays
-                            size={16}
-                            className="mt-0.5 shrink-0 text-primary"
+                            size={14}
+                            className="mt-0.5 shrink-0 text-violet-600 dark:text-violet-400"
                           />
 
-                          <div className="min-w-0">
-                            <p className="text-xs font-medium text-muted-foreground">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[11px] text-muted-foreground">
                               Starts
                             </p>
 
-                            <p className="mt-1 break-words text-sm font-semibold text-foreground">
+                            <p className="mt-1 break-words text-xs leading-5 font-medium">
                               {formatDate(startDate)}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-start gap-2.5">
+                        <div className="flex min-w-0 items-start gap-2">
                           <CalendarDays
-                            size={16}
-                            className="mt-0.5 shrink-0 text-primary"
+                            size={14}
+                            className="mt-0.5 shrink-0 text-violet-600 dark:text-violet-400"
                           />
 
-                          <div className="min-w-0">
-                            <p className="text-xs font-medium text-muted-foreground">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[11px] text-muted-foreground">
                               Ends
                             </p>
 
-                            <p className="mt-1 break-words text-sm font-semibold text-foreground">
+                            <p className="mt-1 break-words text-xs leading-5 font-medium">
                               {formatDate(endDate)}
                             </p>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Details only */}
-                    <div className="mt-6">
-                      <Button
-                        type="button"
-                        onClick={() => handleSeeDetails(assessmentId)}
-                        className="w-full rounded-xl font-semibold"
-                      >
-                        See Details
-                      </Button>
+                      {/* Details button */}
+                      <div className="mt-auto pt-4">
+                        <Button
+                          type="button"
+                          onClick={() => handleSeeDetails(assessmentId)}
+                          className="h-10 w-full rounded-xl bg-violet-600 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700"
+                        >
+                          See Details
+                        </Button>
+                      </div>
                     </div>
                   </article>
                 );
@@ -499,17 +528,18 @@ export default function PublishedAssessments() {
             </div>
 
             {/* Pagination */}
-            <div className="mt-10 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4">
+            <div className="mt-8 flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-3 sm:p-4">
               <Button
                 variant="outline"
                 disabled={page <= 1 || isLoading}
                 onClick={() => setPage((previous) => Math.max(previous - 1, 1))}
+                className="h-9 rounded-lg"
               >
                 <ChevronLeft size={16} className="mr-1" />
                 Previous
               </Button>
 
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs font-medium text-muted-foreground sm:text-sm">
                 Page {page} of {totalPages}
               </span>
 
@@ -518,6 +548,7 @@ export default function PublishedAssessments() {
                 onClick={() =>
                   setPage((previous) => Math.min(previous + 1, totalPages))
                 }
+                className="h-9 rounded-lg bg-violet-600 text-white hover:bg-violet-700"
               >
                 Next
                 <ChevronRight size={16} className="ml-1" />
@@ -528,10 +559,12 @@ export default function PublishedAssessments() {
 
         {/* Empty state */}
         {!isLoading && !isError && filteredAssessments.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
-            <Search size={28} className="mx-auto mb-4 text-primary" />
+          <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-300">
+              <Search size={22} />
+            </div>
 
-            <h3 className="text-xl font-bold">
+            <h3 className="text-lg font-bold">
               {searchTerm.trim()
                 ? "No matching assessments found"
                 : "No published assessments found"}
@@ -547,7 +580,7 @@ export default function PublishedAssessments() {
               <Button
                 variant="outline"
                 onClick={() => handleSearchChange("")}
-                className="mt-5"
+                className="mt-4 rounded-xl border-violet-300 text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:text-violet-300 dark:hover:bg-violet-500/10"
               >
                 Clear Search
               </Button>

@@ -7,6 +7,7 @@ import {
   Users,
   ClipboardList,
   ShieldCheck,
+  Code2,
 } from "lucide-react";
 
 import {
@@ -43,9 +44,14 @@ export default function AdminSidebar() {
           </div>
 
           <div className="min-w-0">
-            <span className="block text-lg font-bold tracking-tight text-blue-600 sm:text-xl">
-              DevAssessment
-            </span>
+            <Link href="/" className="group flex items-center gap-1">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-600/25 transition-transform group-hover:rotate-6">
+            <Code2 size={23} />
+          </span>
+          <span className="text-base font-extrabold tracking-tight sm:text-lg">
+            Dev<span className="text-violet-600">Assess</span>
+          </span>
+        </Link>
 
             <div className="mt-1 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />

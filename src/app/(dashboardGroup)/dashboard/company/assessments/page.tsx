@@ -113,7 +113,7 @@ export default function AssessmentsPage() {
 
         <Link
           href="/dashboard/company/createAssessment"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="inline-flex items-center justify-center gap-2 rounded-lg  bg-violet-600 dark:bg-violet-600 px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <Plus className="h-4 w-4" />
           Create Assessment
