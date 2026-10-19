@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -24,7 +23,8 @@ const features = [
     title: "Assessment Management",
     description:
       "Create, organize, publish, and manage technical assessments from one dashboard.",
-    color: "bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
+    color:
+      "bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
   },
   {
     icon: Code2,
@@ -38,14 +38,16 @@ const features = [
     title: "Candidate Management",
     description:
       "Invite candidates, manage invitations, and track their assessment progress.",
-    color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
+    color:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
   },
   {
     icon: Target,
     title: "Evaluation & Scoring",
     description:
       "Review submitted answers, evaluate responses, and track assessment scores.",
-    color: "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300",
+    color:
+      "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300",
   },
   {
     icon: BarChart3,
@@ -201,10 +203,7 @@ export default function Home() {
                       <span className="text-xs text-slate-400">
                         Assessments
                       </span>
-                      <ClipboardCheck
-                        size={17}
-                        className="text-violet-300"
-                      />
+                      <ClipboardCheck size={17} className="text-violet-300" />
                     </div>
                     <p className="mt-3 text-2xl font-bold">Manage</p>
                     <p className="mt-1 text-xs text-slate-400">
@@ -214,9 +213,7 @@ export default function Home() {
 
                   <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs text-slate-400">
-                        Candidates
-                      </span>
+                      <span className="text-xs text-slate-400">Candidates</span>
                       <Users size={17} className="text-cyan-300" />
                     </div>
                     <p className="mt-3 text-2xl font-bold">Track</p>
@@ -264,9 +261,7 @@ export default function Home() {
                           <span className="font-medium text-slate-200">
                             {item.title}
                           </span>
-                          <span className="text-slate-400">
-                            {item.detail}
-                          </span>
+                          <span className="text-slate-400">{item.detail}</span>
                         </div>
 
                         <div className="h-2 overflow-hidden rounded-full bg-white/10">
@@ -302,9 +297,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-sm font-semibold">Problem Bank</p>
-                <p className="text-xs text-slate-400">
-                  Reusable questions
-                </p>
+                <p className="text-xs text-slate-400">Reusable questions</p>
               </div>
             </div>
           </div>
@@ -344,9 +337,7 @@ export default function Home() {
                     <Icon size={23} />
                   </div>
 
-                  <h3 className="mt-5 text-lg font-bold">
-                    {feature.title}
-                  </h3>
+                  <h3 className="mt-5 text-lg font-bold">{feature.title}</h3>
 
                   <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-400">
                     {feature.description}
@@ -556,8 +547,8 @@ export default function Home() {
             </h2>
 
             <p className="mx-auto mt-5 max-w-2xl leading-7 text-violet-100">
-              Start exploring DevAssessment and discover a more organized
-              way to manage technical assessments.
+              Start exploring DevAssessment and discover a more organized way to
+              manage technical assessments.
             </p>
 
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

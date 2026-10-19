@@ -1,68 +1,89 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
-  ArrowRight,
   BookOpen,
   CheckCircle2,
   Clock3,
   FileText,
-  RefreshCw,
   Search,
-  Sparkles,
   Target,
-  Trophy,
   ChevronLeft,
   ChevronRight,
+  CalendarDays,
 } from "lucide-react";
 
-// আপনার সঠিক অ্যাসেসমেন্ট হুকটি এখানে ইম্পোর্ট করুন
-import { useGetAssessments } from "@/hooks"; // অথবা আপনার প্রজেক্টের সঠিক হুক নাম
+import { Button } from "@/components/ui/button";
+import { useGetPublicAssessments } from "@/hooks";
 
 type Assessment = {
   id?: string;
   _id?: string;
+  assessmentId?: string;
   title?: string;
   description?: string | null;
   duration?: number | null;
   passingScore?: number | null;
   maxAttempts?: number | null;
+  attempts?: number | null;
   price?: number | string | null;
   status?: string | null;
-  startAt?: string | null;
-  endAt?: string | null;
+
+  startAt?: string | Date | null;
+  endAt?: string | Date | null;
+  startDate?: string | Date | null;
+  endDate?: string | Date | null;
+  startsAt?: string | Date | null;
+  endsAt?: string | Date | null;
+
+  // নেস্টেড প্রপার্টি হ্যান্ডেল করার জন্য অতিরিক্ত ফিল্ড
+  settings?: {
+    maxAttempts?: number | null;
+    duration?: number | null;
+    passingScore?: number | null;
+  };
+  pricing?: {
+    price?: number | string | null;
+  };
 };
 
-const SKELETON_KEYS = [
-  "assessment-skeleton-1",
-  "assessment-skeleton-2",
-  "assessment-skeleton-3",
-  "assessment-skeleton-4",
-  "assessment-skeleton-5",
-  "assessment-skeleton-6",
-];
+const SKELETON_KEYS = Array.from(
+  { length: 6 },
+  (_, index) => `assessment-skeleton-${index + 1}`,
+);
 
-/**
- * API response থেকে নিরাপদে Assessments Array খুঁজে বের করার ফাংশন
- */
+function unwrapResponse(response: any): any {
+  let result = response;
+
+  for (let i = 0; i < 6; i++) {
+    if (
+      result &&
+      typeof result === "object" &&
+      !Array.isArray(result) &&
+      "data" in result
+    ) {
+      result = result.data;
+    } else {
+      break;
+    }
+  }
+
+  return result;
+}
+
 function getAssessments(response: any): Assessment[] {
-  if (!response) return [];
+  const result = unwrapResponse(response);
 
-  // ১. যদি সরাসরি ডাটাই একটি অ্যারে হয়
-  if (Array.isArray(response)) return response;
+  if (Array.isArray(result)) {
+    return result;
+  }
 
-  // ২. যদি রেসপন্সের ভেতরে data বা assessments প্রপার্টি থাকে
-  if (response.data && Array.isArray(response.data)) return response.data;
-  if (response.assessments && Array.isArray(response.assessments))
-    return response.assessments;
-  if (response.items && Array.isArray(response.items)) return response.items;
-  if (response.results && Array.isArray(response.results))
-    return response.results;
+  if (!result || typeof result !== "object") {
+    return [];
+  }
 
-  // ৩. nested object চেক
-  const keysToTest = [
-    "data",
+  const keys = [
     "assessments",
     "items",
     "results",
@@ -70,222 +91,242 @@ function getAssessments(response: any): Assessment[] {
     "content",
     "docs",
   ];
-  for (const key of keysToTest) {
-    if (response[key] && typeof response[key] === "object") {
-      const nestedObj = response[key];
-      if (Array.isArray(nestedObj)) return nestedObj;
-      for (const subKey of keysToTest) {
-        if (Array.isArray(nestedObj[subKey])) return nestedObj[subKey];
-      }
+
+  for (const key of keys) {
+    if (Array.isArray(result[key])) {
+      return result[key];
     }
   }
 
   return [];
 }
 
-function formatPrice(price?: number | string | null): string {
-  if (price === null || price === undefined || price === "") {
-    return "Free";
-  }
-  const numericPrice = Number(price);
-  if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
-    return "Free";
-  }
-  return `$${numericPrice.toFixed(2)}`;
+function getAssessmentId(assessment: Assessment): string {
+  return String(
+    assessment.id ?? assessment._id ?? assessment.assessmentId ?? "",
+  );
 }
 
-function formatDate(date?: string | null): string {
-  if (!date) return "Not specified";
-  const parsedDate = new Date(date);
-  if (Number.isNaN(parsedDate.getTime())) return "Not specified";
-  return parsedDate.toLocaleDateString("en-US", {
-    year: "numeric",
+function formatPrice(assessment: Assessment): string {
+  const rawPrice = assessment.price ?? assessment.pricing?.price;
+
+  if (rawPrice === null || rawPrice === undefined || rawPrice === "") {
+    return "Free";
+  }
+
+  const amount = Number(rawPrice);
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return "Free";
+  }
+
+  return `$${amount.toFixed(2)}`;
+}
+
+function getMaxAttempts(assessment: Assessment): string | number {
+  return (
+    assessment.maxAttempts ??
+    assessment.attempts ??
+    assessment.settings?.maxAttempts ??
+    "Unlimited"
+  );
+}
+
+function getDuration(assessment: Assessment): number | null | undefined {
+  return (
+    assessment.duration ??
+    assessment.settings?.duration ??
+    (assessment as any)?.timeLimit ??
+    (assessment as any)?.time
+  );
+}
+
+function getPassingScore(assessment: Assessment): number | null | undefined {
+  return (
+    assessment.passingScore ??
+    assessment.settings?.passingScore ??
+    (assessment as any)?.passMark ??
+    (assessment as any)?.passingPercentage
+  );
+}
+
+function getAssessmentDate(
+  assessment: Assessment,
+  type: "start" | "end",
+): string | Date | null | undefined {
+  if (type === "start") {
+    return (
+      assessment.startAt ??
+      assessment.startDate ??
+      assessment.startsAt ??
+      (assessment as any)?.schedule?.startAt ??
+      (assessment as any)?.schedule?.startDate
+    );
+  }
+
+  return (
+    assessment.endAt ??
+    assessment.endDate ??
+    assessment.endsAt ??
+    (assessment as any)?.schedule?.endAt ??
+    (assessment as any)?.schedule?.endDate
+  );
+}
+
+function formatDate(date?: string | Date | null): string {
+  if (!date) {
+    return "Not specified";
+  }
+
+  const parsedDate = date instanceof Date ? date : new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "Not specified";
+  }
+
+  return parsedDate.toLocaleString("en-BD", {
+    day: "2-digit",
     month: "short",
-    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   });
 }
 
 function AssessmentSkeleton() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-      <div className="mb-5 flex items-center justify-between">
-        <div className="h-11 w-11 rounded-xl bg-gray-200 dark:bg-gray-800" />
-        <div className="h-6 w-20 rounded-full bg-gray-200 dark:bg-gray-800" />
-      </div>
-      <div className="mb-3 h-6 w-3/4 rounded bg-gray-200 dark:bg-gray-800" />
-      <div className="mb-2 h-4 w-full rounded bg-gray-200 dark:bg-gray-800" />
-      <div className="mb-6 h-4 w-2/3 rounded bg-gray-200 dark:bg-gray-800" />
+    <div className="animate-pulse rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <div className="mb-5 h-11 w-11 rounded-xl bg-muted" />
+      <div className="mb-3 h-6 w-3/4 rounded bg-muted" />
+      <div className="mb-2 h-4 w-full rounded bg-muted" />
+      <div className="mb-6 h-4 w-2/3 rounded bg-muted" />
+
       <div className="mb-5 grid grid-cols-2 gap-3">
-        <div className="h-16 rounded-xl bg-gray-100 dark:bg-gray-800" />
-        <div className="h-16 rounded-xl bg-gray-100 dark:bg-gray-800" />
+        <div className="h-16 rounded-xl bg-muted" />
+        <div className="h-16 rounded-xl bg-muted" />
       </div>
-      <div className="h-11 rounded-xl bg-gray-200 dark:bg-gray-800" />
+
+      <div className="h-11 rounded-xl bg-muted" />
     </div>
   );
 }
 
 export default function PublishedAssessments() {
+  const router = useRouter();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
 
-  // এখানে অ্যাসেসমেন্ট লিস্ট আনার সঠিক হুকটি কল করুন
-  const { data, isLoading, isError, refetch, isFetching } = useGetAssessments();
+  const limit = 9;
 
-  console.log("Assessments API Response:", data);
+  const { data, isLoading, isError, refetch } = useGetPublicAssessments(
+    page,
+    limit,
+    searchTerm.trim(),
+  );
 
-  // সেফলি অ্যারে বের করা
-  const assessments = useMemo(() => {
-    return getAssessments(data);
-  }, [data]);
+  const assessments = useMemo(() => getAssessments(data), [data]);
 
-  // স্ট্যাটাস ফিল্টারিং
-  const publishedAssessments = useMemo(() => {
-    return assessments.filter((assessment) => {
-      if (!assessment.status) return true;
-      const status = assessment.status.toUpperCase();
-      return status === "PUBLISHED" || status === "ACTIVE";
-    });
-  }, [assessments]);
-
-  // সার্চ ফিল্টারিং
   const filteredAssessments = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
-    if (!query) return publishedAssessments;
 
-    return publishedAssessments.filter((assessment) => {
-      const title = assessment.title?.toLowerCase() ?? "";
-      const description = assessment.description?.toLowerCase() ?? "";
-      return title.includes(query) || description.includes(query);
+    return assessments.filter((assessment) => {
+      const status = assessment.status?.toUpperCase();
+
+      const isPublished = !status || ["PUBLISHED", "ACTIVE"].includes(status);
+
+      if (!isPublished) {
+        return false;
+      }
+
+      if (!query) {
+        return true;
+      }
+
+      return (
+        assessment.title?.toLowerCase().includes(query) ||
+        assessment.description?.toLowerCase().includes(query)
+      );
     });
-  }, [publishedAssessments, searchTerm]);
+  }, [assessments, searchTerm]);
 
-  const totalPages =
-    (data as any)?.meta?.totalPages || (data as any)?.totalPages || 1;
+  const unwrappedData = unwrapResponse(data);
+
+  const totalPages = Math.max(
+    1,
+    Number(
+      unwrappedData?.meta?.totalPages ??
+        unwrappedData?.pagination?.totalPages ??
+        unwrappedData?.totalPages ??
+        1,
+    ),
+  );
+
+  const handleSeeDetails = (assessmentId: string) => {
+    if (!assessmentId || assessmentId === "undefined") {
+      console.error("Assessment ID is missing.");
+      return;
+    }
+
+    const detailsPath = `/publishedAssessmentCards/${encodeURIComponent(
+      assessmentId,
+    )}`;
+
+    const tokenKeys = ["accessToken", "access_token", "token"];
+
+    const token = tokenKeys
+      .map((key) => localStorage.getItem(key))
+      .find((value) => value && value !== "null" && value !== "undefined");
+
+    if (!token) {
+      router.push(`/login?redirect=${encodeURIComponent(detailsPath)}`);
+      return;
+    }
+
+    router.push(detailsPath);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setPage(1);
+  };
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-        <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-violet-200/40 blur-3xl dark:bg-violet-900/20" />
-        <div className="absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl dark:bg-blue-900/20" />
-
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-2 md:items-center md:py-24">
-          <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700 dark:border-violet-800 dark:bg-violet-950/50 dark:text-violet-300">
-              <Sparkles size={16} />
-              Build your skills with real challenges
-            </div>
-
-            <h1 className="max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Discover Your Next{" "}
-              <span className="text-violet-600 dark:text-violet-400">
-                Challenge
-              </span>
-            </h1>
-
-            <p className="mt-6 max-w-xl text-base leading-7 text-gray-600 dark:text-gray-400 sm:text-lg">
-              Explore published assessments, test your knowledge, and take the
-              next step in your developer journey.
-            </p>
-
-            <a
-              href="#published-assessments"
-              className="mt-8 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white transition hover:bg-violet-700"
-            >
-              Explore Assessments
-              <ArrowRight size={18} />
-            </a>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300">
-                <BookOpen size={24} />
-              </div>
-              <p className="text-3xl font-bold">
-                {isLoading ? "..." : publishedAssessments.length}
-              </p>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Published Assessments
-              </p>
-            </div>
-
-            <div className="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                <Target size={24} />
-              </div>
-              <p className="text-3xl font-bold">Your</p>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Next Career Challenge
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-                <Clock3 size={24} />
-              </div>
-              <p className="text-xl font-bold">Timed Tests</p>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Practice within a time limit
-              </p>
-            </div>
-
-            <div className="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-                <Trophy size={24} />
-              </div>
-              <p className="text-xl font-bold">Track Progress</p>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Challenge yourself and improve
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Assessments Section */}
+    <main className="min-h-screen text-foreground">
       <section
         id="published-assessments"
-        className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20"
+        className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
       >
-        <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        {/* Header and search */}
+        <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-violet-600 dark:text-violet-400">
-              <FileText size={17} />
+            <div className="mb-2.5 inline-flex items-center gap-1.5 text-xs font-bold tracking-wider text-primary uppercase">
+              <FileText size={15} />
               ASSESSMENT LIBRARY
             </div>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+
+            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
               Published Assessments
             </h2>
-            <p className="mt-3 max-w-2xl text-gray-600 dark:text-gray-400">
-              Find an assessment that matches your skills and start practicing.
+
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              Explore challenges designed to improve your skills.
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => refetch()}
-            disabled={isFetching}
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-semibold transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
-          >
-            <RefreshCw size={16} className={isFetching ? "animate-spin" : ""} />
-            Refresh
-          </button>
-        </div>
-
-        {/* Search */}
-        <div className="mb-8">
-          <div className="relative max-w-xl">
+          <div className="relative w-full md:w-80 lg:w-96">
             <Search
-              size={19}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              size={17}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
+
             <input
               type="search"
               value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Search by assessment title or description..."
-              className="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-12 pr-4 outline-none transition placeholder:text-gray-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 dark:border-gray-700 dark:bg-gray-900"
+              onChange={(event) => handleSearchChange(event.target.value)}
+              placeholder="Search assessments..."
+              className="w-full rounded-xl border border-border bg-card py-2.5 pr-4 pl-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
           </div>
         </div>
@@ -301,188 +342,215 @@ export default function PublishedAssessments() {
 
         {/* Error */}
         {!isLoading && isError && (
-          <div className="rounded-2xl border border-red-200 bg-white px-6 py-12 text-center dark:border-red-900 dark:bg-gray-900">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400">
-              <RefreshCw size={25} />
-            </div>
+          <div className="rounded-2xl border border-destructive/30 bg-card p-8 text-center">
             <h3 className="text-xl font-bold">Failed to load assessments</h3>
-            <p className="mx-auto mt-2 max-w-md text-sm text-gray-600 dark:text-gray-400">
-              We could not retrieve the assessments. Please check your
-              connection and try again.
+
+            <p className="mt-2 text-sm text-muted-foreground">
+              Please try loading the assessments again.
             </p>
-            <button
-              type="button"
-              onClick={() => refetch()}
-              className="mt-6 rounded-xl bg-violet-600 px-5 py-3 font-semibold text-white transition hover:bg-violet-700"
-            >
+
+            <Button onClick={() => refetch()} className="mt-5 rounded-xl">
               Try Again
-            </button>
+            </Button>
           </div>
         )}
 
-        {/* Assessment Cards Grid */}
+        {/* Assessment cards */}
         {!isLoading && !isError && filteredAssessments.length > 0 && (
           <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredAssessments.map((assessment, index) => {
-                const assessmentId =
-                  assessment.id || assessment._id || `item-${index}`;
+              {filteredAssessments.map((assessment) => {
+                const assessmentId = getAssessmentId(assessment);
+
+                if (!assessmentId) {
+                  return null;
+                }
+
+                const startDate = getAssessmentDate(assessment, "start");
+                const endDate = getAssessmentDate(assessment, "end");
+                const maxAttempts = getMaxAttempts(assessment);
+                const assessmentDuration = getDuration(assessment);
+                const passingScore = getPassingScore(assessment);
 
                 return (
                   <article
                     key={assessmentId}
-                    className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-violet-300 hover:shadow-xl hover:shadow-violet-500/5 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-violet-800"
+                    className="group flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl"
                   >
-                    <div className="flex items-start justify-between gap-3 border-b border-gray-100 p-6 dark:border-gray-800">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300">
-                        <BookOpen size={23} />
-                      </div>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                        <CheckCircle2 size={14} />
-                        {assessment.status || "Published"}
-                      </span>
-                    </div>
+                    <div>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                          <BookOpen size={22} />
+                        </div>
 
-                    <div className="flex flex-1 flex-col p-6">
-                      <h3 className="line-clamp-2 text-xl font-bold transition group-hover:text-violet-600 dark:group-hover:text-violet-400">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600">
+                          <CheckCircle2 size={13} />
+                          {assessment.status || "Published"}
+                        </span>
+                      </div>
+
+                      <h3 className="mt-5 line-clamp-2 text-lg font-bold group-hover:text-primary">
                         {assessment.title || "Untitled Assessment"}
                       </h3>
 
-                      <p className="mt-3 line-clamp-3 min-h-[4.5rem] text-sm leading-6 text-gray-600 dark:text-gray-400">
+                      <p className="mt-2 line-clamp-2 min-h-10 text-sm leading-relaxed text-muted-foreground">
                         {assessment.description ||
-                          "Test your skills and evaluate your knowledge with this assessment."}
+                          "Test your skills with this assessment."}
                       </p>
 
-                      <div className="mt-6 grid grid-cols-2 gap-3">
-                        <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800/70">
-                          <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                            <Clock3 size={16} />
+                      {/* Assessment information */}
+                      <div className="mt-5 grid grid-cols-2 gap-2.5">
+                        <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
+                            <Clock3 size={14} />
                             <span className="text-xs">Duration</span>
                           </div>
-                          <p className="mt-2 text-base font-bold">
-                            {assessment.duration != null
-                              ? `${assessment.duration} min`
+
+                          <p className="mt-1 text-sm font-bold">
+                            {assessmentDuration != null
+                              ? `${assessmentDuration} min`
                               : "N/A"}
                           </p>
                         </div>
 
-                        <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800/70">
-                          <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                            <Target size={16} />
-                            <span className="text-xs">Passing Score</span>
+                        <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
+                            <Target size={14} />
+                            <span className="text-xs">Passing</span>
                           </div>
-                          <p className="mt-2 text-base font-bold">
-                            {assessment.passingScore != null
-                              ? `${assessment.passingScore}%`
-                              : "N/A"}
+
+                          <p className="mt-1 text-sm font-bold">
+                            {passingScore != null ? `${passingScore}%` : "N/A"}
                           </p>
                         </div>
 
-                        <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800/70">
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
+                          <span className="text-xs text-muted-foreground">
                             Max Attempts
-                          </p>
-                          <p className="mt-2 text-base font-bold">
-                            {assessment.maxAttempts ?? "N/A"}
+                          </span>
+
+                          <p className="mt-1 text-sm font-bold">
+                            {maxAttempts}
                           </p>
                         </div>
 
-                        <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800/70">
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
+                          <span className="text-xs text-muted-foreground">
                             Price
-                          </p>
-                          <p className="mt-2 text-base font-bold text-violet-600 dark:text-violet-400">
-                            {formatPrice(assessment.price)}
+                          </span>
+
+                          <p className="mt-1 text-sm font-bold text-primary">
+                            {formatPrice(assessment)}
                           </p>
                         </div>
                       </div>
 
-                      <div className="mt-5 space-y-2 text-xs text-gray-500 dark:text-gray-400">
-                        <p>
-                          Starts:{" "}
-                          <span className="font-medium text-gray-700 dark:text-gray-300">
-                            {formatDate(assessment.startAt)}
-                          </span>
-                        </p>
-                        <p>
-                          Ends:{" "}
-                          <span className="font-medium text-gray-700 dark:text-gray-300">
-                            {formatDate(assessment.endAt)}
-                          </span>
-                        </p>
-                      </div>
-
-                      <div className="mt-auto pt-6">
-                        <Link
-                          href={`/assessments/${assessmentId}`}
-                          className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 font-semibold text-white transition hover:bg-violet-700"
-                        >
-                          See Details
-                          <ArrowRight
-                            size={17}
-                            className="transition-transform group-hover:translate-x-1"
+                      {/* Start and end dates */}
+                      <div className="mt-4 space-y-3 border-t border-border/60 pt-4">
+                        <div className="flex items-start gap-2.5">
+                          <CalendarDays
+                            size={16}
+                            className="mt-0.5 shrink-0 text-primary"
                           />
-                        </Link>
+
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium text-muted-foreground">
+                              Starts
+                            </p>
+
+                            <p className="mt-1 break-words text-sm font-semibold text-foreground">
+                              {formatDate(startDate)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-2.5">
+                          <CalendarDays
+                            size={16}
+                            className="mt-0.5 shrink-0 text-primary"
+                          />
+
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium text-muted-foreground">
+                              Ends
+                            </p>
+
+                            <p className="mt-1 break-words text-sm font-semibold text-foreground">
+                              {formatDate(endDate)}
+                            </p>
+                          </div>
+                        </div>
                       </div>
+                    </div>
+
+                    {/* Details only */}
+                    <div className="mt-6">
+                      <Button
+                        type="button"
+                        onClick={() => handleSeeDetails(assessmentId)}
+                        className="w-full rounded-xl font-semibold"
+                      >
+                        See Details
+                      </Button>
                     </div>
                   </article>
                 );
               })}
             </div>
 
-            {/* Pagination Controls */}
-            <div className="mt-12 flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-              <button
-                type="button"
-                disabled={page <= 1}
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            {/* Pagination */}
+            <div className="mt-10 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4">
+              <Button
+                variant="outline"
+                disabled={page <= 1 || isLoading}
+                onClick={() => setPage((previous) => Math.max(previous - 1, 1))}
               >
-                <ChevronLeft size={16} />
+                <ChevronLeft size={16} className="mr-1" />
                 Previous
-              </button>
+              </Button>
 
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <span className="text-sm text-muted-foreground">
                 Page {page} of {totalPages}
               </span>
 
-              <button
-                type="button"
-                disabled={page >= totalPages}
-                onClick={() => setPage((prev) => prev + 1)}
-                className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50"
+              <Button
+                disabled={page >= totalPages || isLoading}
+                onClick={() =>
+                  setPage((previous) => Math.min(previous + 1, totalPages))
+                }
               >
                 Next
-                <ChevronRight size={16} />
-              </button>
+                <ChevronRight size={16} className="ml-1" />
+              </Button>
             </div>
           </>
         )}
 
-        {/* Empty State */}
+        {/* Empty state */}
         {!isLoading && !isError && filteredAssessments.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center dark:border-gray-700 dark:bg-gray-900">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300">
-              <Search size={28} />
-            </div>
+          <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
+            <Search size={28} className="mx-auto mb-4 text-primary" />
+
             <h3 className="text-xl font-bold">
               {searchTerm.trim()
                 ? "No matching assessments found"
                 : "No published assessments found"}
             </h3>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
+
+            <p className="mt-2 text-sm text-muted-foreground">
               {searchTerm.trim()
-                ? "Try another keyword to find an assessment."
-                : "There are currently no published assessments available. Please check again later."}
+                ? "Try another search keyword."
+                : "There are currently no published assessments."}
             </p>
+
             {searchTerm.trim() && (
-              <button
-                type="button"
-                onClick={() => setSearchTerm("")}
-                className="mt-5 rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold transition hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+              <Button
+                variant="outline"
+                onClick={() => handleSearchChange("")}
+                className="mt-5"
               >
                 Clear Search
-              </button>
+              </Button>
             )}
           </div>
         )}

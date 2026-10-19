@@ -7,6 +7,7 @@ import { useGetAssessments } from "@/hooks";
 
 export default function PublishedAssessmentsPage() {
   const { data, isLoading, isError } = useGetAssessments();
+  console.log("get assessments", data);
 
   const assessments = Array.isArray(data)
     ? data
